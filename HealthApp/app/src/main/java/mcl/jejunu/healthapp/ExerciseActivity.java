@@ -8,7 +8,7 @@ import android.widget.Button;
 
 public class ExerciseActivity extends AppCompatActivity {
 
-    private Button walkButton, runButton, climbButton;
+    private Button walkButton, runButton, climbButton, bicycleButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,13 +16,14 @@ public class ExerciseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_exercise);
 
         walkButton = (Button) findViewById(R.id.walkButton);
-        runButton= (Button) findViewById(R.id.runButton);
+        runButton = (Button) findViewById(R.id.runButton);
+        bicycleButton = (Button) findViewById(R.id.bicycleButton);
         climbButton = (Button) findViewById(R.id.climbButton);
 
         walkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ExerciseActivity.this, CurrentActivity.class);
+                Intent intent = new Intent(ExerciseActivity.this, GoalActivity.class);
                 startActivity(intent);
             }
         });
@@ -30,7 +31,15 @@ public class ExerciseActivity extends AppCompatActivity {
         runButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ExerciseActivity.this, CurrentActivity.class);
+                Intent intent = new Intent(ExerciseActivity.this, GoalActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        bicycleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ExerciseActivity.this, GoalActivity.class);
                 startActivity(intent);
             }
         });
@@ -38,9 +47,11 @@ public class ExerciseActivity extends AppCompatActivity {
         climbButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ExerciseActivity.this, CurrentActivity.class);
+                Intent intent = new Intent(ExerciseActivity.this, GoalActivity.class);
                 startActivity(intent);
             }
         });
+
+
     }
 }

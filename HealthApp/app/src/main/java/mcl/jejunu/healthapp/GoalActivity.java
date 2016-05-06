@@ -6,21 +6,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class CurrentActivity extends AppCompatActivity {
+public class GoalActivity extends AppCompatActivity {
 
-    private Button predictionButton;
+    private Button inputButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_goal);
 
-        predictionButton = (Button) findViewById(R.id.predictionButton);
-
-        predictionButton.setOnClickListener(new View.OnClickListener() {
+        inputButton = (Button) findViewById(R.id.inputButton);
+        inputButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CurrentActivity.this, PredictionActivity.class);
+                Intent intent = new Intent(GoalActivity.this, PredictionActivity.class);
                 startActivity(intent);
             }
         });

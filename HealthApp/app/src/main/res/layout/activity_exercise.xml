@@ -14,29 +14,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:padding="30dp"
         android:text="운동"
-        android:textSize="40dp"/>
+        android:textSize="50dp"/>
 
     <Button
+        android:background="#EEEEEE"
         android:layout_gravity="center"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:textSize="25dp"
         android:text="걷기"
         android:id="@+id/walkButton" />
 
     <Button
+        android:background="#EEEEEE"
         android:layout_gravity="center"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:textSize="25dp"
         android:text="뛰기"
         android:id="@+id/runButton" />
 
     <Button
+        android:background="#EEEEEE"
         android:layout_gravity="center"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textSize="25dp"
+        android:text="자전거"
+        android:id="@+id/bicycleButton" />
+
+    <Button
+        android:background="#EEEEEE"
+        android:layout_gravity="center"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:textSize="25dp"
         android:text="등산"
         android:id="@+id/climbButton" />

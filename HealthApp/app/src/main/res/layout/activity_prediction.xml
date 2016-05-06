@@ -11,13 +11,15 @@
     tools:context="mcl.jejunu.healthapp.PredictionActivity">
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="30dp"
-        android:text="예측"/>
+        android:layout_gravity="center"
+        android:text="데이터"
+        android:textSize="40dp"
+        android:padding="10dp"/>
 
     <LinearLayout
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -25,10 +27,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:text="걸음 수"
+            android:text="목표치"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
+            android:id="@+id/goalValueText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
@@ -36,6 +39,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -43,10 +47,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:text="걸은 거리"
+            android:text="현재 값"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
+            android:id="@+id/currentValueText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
@@ -54,6 +59,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -61,10 +67,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:text="심박수"
+            android:text="잔여 값"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
+            android:id="@+id/remainValueText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
@@ -72,6 +79,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -79,19 +87,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:text="근활성도"
+            android:text="예상 소요 시간"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
-            android:id="@+id/muscleActiveText"
+            android:id="@+id/timeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
-
 
     <LinearLayout
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -99,19 +107,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:text="근피로도"
+            android:text="1일 후"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
-            android:id="@+id/muscleFatigueText"
+            android:id="@+id/dayAfterText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
-
 
     <LinearLayout
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -119,16 +127,118 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:text="칼로리"
+            android:text="1주 후"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
-            android:id="@+id/currentCalorieText"
+            android:id="@+id/weekLaterText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="2주 후"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/twoWeeksLaterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="1달 후"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/monthLaterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="3달 후"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/threeMonthsLaterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="6달 후"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/sixMonthsLaterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="1년 후"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/yearLaterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+
 
 
 </LinearLayout>
