@@ -9,19 +9,19 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
-    public DBHelper(Context context){
+    public DBHelper(Context context) {
         super(context, "health.db", null, 1);
     }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE mytable(id integer primary key autoincrement, name text);";
+        String sql = "CREATE TABLE exercise(count INTEGER, timecheck DATETIME);";
         db.execSQL(sql);
-
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String sql = "drop table mytable;";
+        String sql = "DROP TABLE exercise;";
         db.execSQL(sql);
         onCreate(db);
     }
