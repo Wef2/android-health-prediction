@@ -12,14 +12,16 @@
         <activity android:name=".activity.PredictionActivity" />
         <activity android:name=".activity.GoalActivity" />
         <activity android:name=".activity.UserActivity">
+        </activity>
+        <activity android:name=".activity.PastActivity" />
+        <activity android:name=".activity.CurrentActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.PastActivity" />
-        <activity android:name=".activity.CurrentActivity"></activity>
     </application>
 
 </manifest>

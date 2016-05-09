@@ -1,5 +1,6 @@
 package mcl.jejunu.healthapp.activity;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.util.DBHelper;
@@ -36,10 +38,13 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 count = count + 1;
-                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                 String date = formatter.format(new Date());
                 SQLiteDatabase database = dbHelper.getWritableDatabase();
-                database.execSQL("INSERT INTO exercise (count, timecheck) VALUES(" + count + ", datetime('now'))");
+                ContentValues values = new ContentValues();
+                values.put("count", count);
+                values.put("timecheck", date);
+                database.insert("exercise", null, values);
                 database.close();
             }
         });
@@ -48,8 +53,9 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SQLiteDatabase database = dbHelper.getReadableDatabase();
+
                 Cursor cursor = database.rawQuery("SELECT * FROM exercise", null);
-                while(cursor.moveToNext()){
+                while (cursor.moveToNext()) {
                     Log.i("count", String.valueOf(cursor.getInt(1)));
                     Log.i("date", cursor.getString(2));
                 }

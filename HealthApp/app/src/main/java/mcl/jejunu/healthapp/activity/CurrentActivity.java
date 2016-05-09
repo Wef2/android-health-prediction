@@ -1,9 +1,10 @@
 package mcl.jejunu.healthapp.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import mcl.jejunu.healthapp.R;
+
 
 public class CurrentActivity extends AppCompatActivity {
 
@@ -12,4 +13,5 @@ public class CurrentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_current);
     }
+
 }
