@@ -8,15 +8,15 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ExerciseActivity">
+        <activity android:name=".activity.ExerciseActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PredictionActivity" />
-        <activity android:name=".GoalActivity"></activity>
+        <activity android:name=".activity.PredictionActivity" />
+        <activity android:name=".activity.GoalActivity"></activity>
     </application>
 
 </manifest>

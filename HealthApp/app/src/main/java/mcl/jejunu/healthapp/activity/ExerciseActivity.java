@@ -1,10 +1,12 @@
-package mcl.jejunu.healthapp;
+package mcl.jejunu.healthapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+
+import mcl.jejunu.healthapp.R;
 
 public class ExerciseActivity extends AppCompatActivity {
 
