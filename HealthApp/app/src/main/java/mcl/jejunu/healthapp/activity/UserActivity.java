@@ -1,8 +1,5 @@
 package mcl.jejunu.healthapp.activity;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,21 +11,27 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 import mcl.jejunu.healthapp.R;
-import mcl.jejunu.healthapp.util.DBHelper;
+import mcl.jejunu.healthapp.object.Exercise;
 
 public class UserActivity extends AppCompatActivity {
 
-    private DBHelper dbHelper;
     private Button testButton1, testButton2, testButton3;
     private int count = 0;
+
+    private Realm realm;
+    private RealmConfiguration realmConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
+        realmConfig = new RealmConfiguration.Builder(this).build();
 
-        dbHelper = new DBHelper(this);
+        realm = Realm.getInstance(realmConfig);
 
         testButton1 = (Button) findViewById(R.id.testButton1);
         testButton2 = (Button) findViewById(R.id.testButton2);
@@ -38,38 +41,41 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 count = count + 1;
-                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                String date = formatter.format(new Date());
-                SQLiteDatabase database = dbHelper.getWritableDatabase();
-                ContentValues values = new ContentValues();
-                values.put("count", count);
-                values.put("timecheck", date);
-                database.insert("exercise", null, values);
-                database.close();
+                realm.beginTransaction();
+                Exercise exercise = realm.createObject(Exercise.class);
+                exercise.setCount(count);
+                exercise.setDate(new Date());
+                realm.commitTransaction();
+
             }
         });
 
         testButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SQLiteDatabase database = dbHelper.getReadableDatabase();
-
-                Cursor cursor = database.rawQuery("SELECT * FROM exercise", null);
-                while (cursor.moveToNext()) {
-                    Log.i("count", String.valueOf(cursor.getInt(1)));
-                    Log.i("date", cursor.getString(2));
+                RealmResults<Exercise> results = realm.where(Exercise.class).findAll();
+                for (int i = 0; i < results.size(); i++) {
+                    Log.i("Exercise", results.get(i).toString());
                 }
-                database.close();
             }
         });
 
         testButton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SQLiteDatabase database = dbHelper.getWritableDatabase();
-                database.execSQL("DELETE FROM exercise WHERE count < 100000");
-                database.close();
+                // Delete all persons
+                realm.beginTransaction();
+                realm.where(Exercise.class).findAll().deleteAllFromRealm();
+                realm.commitTransaction();
             }
         });
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
+    }
+
+
 }

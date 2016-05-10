@@ -19,6 +19,8 @@ public class GoalActivity extends AppCompatActivity {
     private TextView distanceText, calorieText , timeText;
     private int step = 0, stride = 0, minute = 0, calorie = 0;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +82,7 @@ public class GoalActivity extends AppCompatActivity {
 
             }
         });
+
 
         inputButton = (Button) findViewById(R.id.inputButton);
         inputButton.setOnClickListener(new View.OnClickListener() {
