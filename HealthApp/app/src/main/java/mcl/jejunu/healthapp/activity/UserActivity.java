@@ -6,10 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -29,8 +26,8 @@ public class UserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
-        realmConfig = new RealmConfiguration.Builder(this).build();
 
+        realmConfig = new RealmConfiguration.Builder(this).build();
         realm = Realm.getInstance(realmConfig);
 
         testButton1 = (Button) findViewById(R.id.testButton1);
@@ -46,7 +43,6 @@ public class UserActivity extends AppCompatActivity {
                 exercise.setCount(count);
                 exercise.setDate(new Date());
                 realm.commitTransaction();
-
             }
         });
 
@@ -63,7 +59,6 @@ public class UserActivity extends AppCompatActivity {
         testButton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Delete all persons
                 realm.beginTransaction();
                 realm.where(Exercise.class).findAll().deleteAllFromRealm();
                 realm.commitTransaction();
@@ -76,6 +71,4 @@ public class UserActivity extends AppCompatActivity {
         super.onDestroy();
         realm.close();
     }
-
-
 }
