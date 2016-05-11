@@ -1,9 +1,11 @@
 package mcl.jejunu.healthapp.object;
 
+import io.realm.RealmObject;
+
 /**
  * Created by neo-202 on 2016-05-10.
  */
-public class User {
+public class User extends RealmObject {
 
     private String name;
     private int height;
