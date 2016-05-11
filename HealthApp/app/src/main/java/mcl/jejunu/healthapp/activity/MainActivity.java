@@ -10,7 +10,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import mcl.jejunu.healthapp.R;
+import mcl.jejunu.healthapp.fragment.CurrentFragment;
 import mcl.jejunu.healthapp.fragment.GoalFragment;
+import mcl.jejunu.healthapp.fragment.InformationFragment;
+import mcl.jejunu.healthapp.fragment.PastFragment;
+import mcl.jejunu.healthapp.fragment.PredictionFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -57,10 +61,16 @@ public class MainActivity extends AppCompatActivity
             getFragmentManager().beginTransaction().replace(R.id.fragment_layout, GoalFragment.getInstance()).commit();
         } else if (id == R.id.nav_past) {
             toolbar.setTitle("과거");
+            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, PastFragment.getInstance()).commit();
         } else if (id == R.id.nav_current) {
             toolbar.setTitle("현재");
+            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, CurrentFragment.getInstance()).commit();
         } else if (id == R.id.nav_prediction) {
             toolbar.setTitle("미래");
+            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, PredictionFragment.getInstance()).commit();
+        } else if (id == R.id.nav_information) {
+            toolbar.setTitle("나의 정보");
+            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, InformationFragment.getInstance()).commit();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

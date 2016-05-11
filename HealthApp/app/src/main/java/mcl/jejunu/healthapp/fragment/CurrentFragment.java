@@ -1,7 +1,10 @@
-package mcl.jejunu.healthapp.activity;
+package mcl.jejunu.healthapp.fragment;
 
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -16,17 +19,25 @@ import java.util.ArrayList;
 import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.formatter.MyYAxisValueFormatter;
 
+/**
+ * Created by neo-202 on 2016-05-11.
+ */
+public class CurrentFragment extends Fragment {
 
-public class CurrentActivity extends AppCompatActivity {
-
+    private static CurrentFragment newInstance = null;
     private BarChart chart;
-
     private int goalValue, currentValue, remainValue;
 
+    public static CurrentFragment getInstance() {
+        if (newInstance == null) {
+            newInstance = new CurrentFragment();
+        }
+        return newInstance;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_current);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_current, container, false);
 
         goalValue = 10000;
         currentValue = 4000;
@@ -35,7 +46,7 @@ public class CurrentActivity extends AppCompatActivity {
             remainValue = 0;
         }
 
-        chart = (BarChart) findViewById(R.id.currentBarChart);
+        chart = (BarChart) view.findViewById(R.id.currentBarChart);
 
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
 
@@ -71,6 +82,7 @@ public class CurrentActivity extends AppCompatActivity {
         chart.setDescription("");
         chart.getLegend().setEnabled(false);
         chart.invalidate();
+        return view;
     }
 
 }
