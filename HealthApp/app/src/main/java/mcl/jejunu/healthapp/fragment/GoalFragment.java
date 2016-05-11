@@ -1,35 +1,45 @@
-package mcl.jejunu.healthapp.activity;
+package mcl.jejunu.healthapp.fragment;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import mcl.jejunu.healthapp.R;
 
-public class GoalActivity extends AppCompatActivity {
+/**
+ * Created by neo-202 on 2016-05-11.
+ */
+public class GoalFragment extends Fragment {
 
-    private Button inputButton;
+    private static GoalFragment newInstance = null;
+
+    public static GoalFragment getInstance() {
+        if (newInstance == null) {
+            newInstance = new GoalFragment();
+        }
+        return newInstance;
+    }
+
     private EditText stepEditText, strideEditText;
-    private TextView distanceText, calorieText , timeText;
-    private int step = 0, stride = 0, minute = 0, calorie = 0;
+    private TextView distanceText, calorieText, timeText;
+    private int step = 0, stride = 0;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_goal);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_goal, container, false);
 
-        stepEditText = (EditText) findViewById(R.id.stepEditText);
-        strideEditText = (EditText) findViewById(R.id.strideEditText);
+        stepEditText = (EditText) view.findViewById(R.id.stepEditText);
+        strideEditText = (EditText) view.findViewById(R.id.strideEditText);
 
-        distanceText = (TextView) findViewById(R.id.distanceText);
-        timeText = (TextView) findViewById(R.id.timeText);
-        calorieText = (TextView) findViewById(R.id.calorieText);
+        distanceText = (TextView) view.findViewById(R.id.distanceText);
+        timeText = (TextView) view.findViewById(R.id.timeText);
+        calorieText = (TextView) view.findViewById(R.id.calorieText);
 
         stepEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -39,10 +49,9 @@ public class GoalActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(stepEditText.getText().length() == 0){
+                if (stepEditText.getText().length() == 0) {
                     step = 0;
-                }
-                else{
+                } else {
                     step = Integer.valueOf(stepEditText.getText().toString());
                 }
                 distanceText.setText(String.valueOf(step * stride / 100));
@@ -64,10 +73,9 @@ public class GoalActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(strideEditText.getText().length() == 0){
+                if (strideEditText.getText().length() == 0) {
                     stride = 0;
-                }
-                else{
+                } else {
                     stride = Integer.valueOf(strideEditText.getText().toString());
                 }
                 distanceText.setText(String.valueOf(step * stride / 100));
@@ -81,13 +89,7 @@ public class GoalActivity extends AppCompatActivity {
             }
         });
 
-        inputButton = (Button) findViewById(R.id.inputButton);
-        inputButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(GoalActivity.this, PredictionActivity.class);
-                startActivity(intent);
-            }
-        });
+        return view;
     }
+
 }

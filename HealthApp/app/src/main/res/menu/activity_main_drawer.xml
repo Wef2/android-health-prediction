@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_goal"
+            android:icon="@drawable/ic_check_24dp"
+            android:title="목표" />
+        <item
+            android:id="@+id/nav_past"
+            android:icon="@drawable/ic_reply_24dp"
+            android:title="과거" />
+        <item
+            android:id="@+id/nav_current"
+            android:icon="@drawable/ic_favorite_outline_24dp"
+            android:title="현재" />
+        <item
+            android:id="@+id/nav_prediction"
+            android:icon="@drawable/ic_trending_up_24dp"
+            android:title="미래" />
+    </group>
+
+</menu>
