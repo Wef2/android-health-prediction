@@ -11,25 +11,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import mcl.jejunu.healthapp.R;
+import mcl.jejunu.healthapp.util.SharedPreferenceUtil;
 
 /**
  * Created by neo-202 on 2016-05-11.
  */
 public class GoalFragment extends Fragment {
 
-    private static GoalFragment newInstance = null;
-
-    public static GoalFragment getInstance() {
-        if (newInstance == null) {
-            newInstance = new GoalFragment();
-        }
-        return newInstance;
-    }
-
     private EditText stepEditText, strideEditText;
     private TextView distanceText, calorieText, timeText;
-    private int step = 0, stride = 0;
-
+    private int steps = 0, stride = 0;
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_goal, container, false);
@@ -50,13 +42,14 @@ public class GoalFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (stepEditText.getText().length() == 0) {
-                    step = 0;
+                    steps = 0;
                 } else {
-                    step = Integer.valueOf(stepEditText.getText().toString());
+                    steps = Integer.valueOf(stepEditText.getText().toString());
                 }
-                distanceText.setText(String.valueOf(step * stride / 100));
-                timeText.setText(String.valueOf((step * stride / 100) / 70));
-                calorieText.setText(String.valueOf((step * stride / 100) / 70 * 3));
+                SharedPreferenceUtil.putSharedPreference(getActivity(), "steps", steps);
+                distanceText.setText(String.valueOf(steps * stride / 100));
+                timeText.setText(String.valueOf((steps * stride / 100) / 70));
+                calorieText.setText(String.valueOf((steps * stride / 100) / 70 * 3));
             }
 
             @Override
@@ -78,9 +71,10 @@ public class GoalFragment extends Fragment {
                 } else {
                     stride = Integer.valueOf(strideEditText.getText().toString());
                 }
-                distanceText.setText(String.valueOf(step * stride / 100));
-                timeText.setText(String.valueOf((step * stride / 100) / 70));
-                calorieText.setText(String.valueOf((step * stride / 100) / 70 * 3));
+                SharedPreferenceUtil.putSharedPreference(getActivity(), "stride", stride);
+                distanceText.setText(String.valueOf(steps * stride / 100));
+                timeText.setText(String.valueOf((steps * stride / 100) / 70));
+                calorieText.setText(String.valueOf((steps * stride / 100) / 70 * 3));
             }
 
             @Override

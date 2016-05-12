@@ -5,19 +5,20 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 /**
- * Created by Kim on 2016-05-09.
+ * Created by neo-202 on 2016-05-12.
  */
 public class SharedPreferenceUtil {
 
-    public static void putSharedPreference(Context context, String key, String value) {
+    public static void putSharedPreference(Context context, String key, int value) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(key, value);
+        editor.putInt(key, value);
         editor.commit();
     }
 
-    public static String getSharedPreference(Context context, String key) {
+    public static int getSharedPreference(Context context, String key) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString(key, null);
+        return prefs.getInt(key, 0);
     }
+
 }

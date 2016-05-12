@@ -21,7 +21,9 @@ android {
 }
 
 repositories {
+    mavenCentral()
     maven { url "https://jitpack.io" }
+    maven { url 'http://devrepo.kakao.com:8088/nexus/content/groups/public/' }
 }
 
 dependencies {
@@ -31,4 +33,5 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     compile 'com.android.support:support-v4:23.3.0'
     compile 'com.android.support:design:23.3.0'
+    compile group: 'com.kakao.sdk', name: 'kakaotalk', version: '1.1.16'
 }

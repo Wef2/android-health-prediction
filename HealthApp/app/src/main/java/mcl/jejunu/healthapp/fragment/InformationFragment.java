@@ -13,15 +13,6 @@ import mcl.jejunu.healthapp.R;
  */
 public class InformationFragment extends Fragment {
 
-    private static InformationFragment newInstance = null;
-
-    public static InformationFragment getInstance() {
-        if (newInstance == null) {
-            newInstance = new InformationFragment();
-        }
-        return newInstance;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_information, container, false);

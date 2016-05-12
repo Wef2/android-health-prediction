@@ -24,16 +24,8 @@ import mcl.jejunu.healthapp.formatter.MyYAxisValueFormatter;
  */
 public class CurrentFragment extends Fragment {
 
-    private static CurrentFragment newInstance = null;
     private BarChart chart;
     private int goalValue, currentValue, remainValue;
-
-    public static CurrentFragment getInstance() {
-        if (newInstance == null) {
-            newInstance = new CurrentFragment();
-        }
-        return newInstance;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,7 +41,6 @@ public class CurrentFragment extends Fragment {
         chart = (BarChart) view.findViewById(R.id.currentBarChart);
 
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
-
         BarEntry goalEntry = new BarEntry(goalValue, 0);
         valsUser.add(goalEntry);
         BarEntry currentEntry = new BarEntry(currentValue, 1);

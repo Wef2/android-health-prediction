@@ -3,6 +3,8 @@ package mcl.jejunu.healthapp.formatter;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 
+import mcl.jejunu.healthapp.R;
+
 /**
  * Created by neo-202 on 2016-05-11.
  */

@@ -9,12 +9,15 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.fragment.CurrentFragment;
 import mcl.jejunu.healthapp.fragment.GoalFragment;
 import mcl.jejunu.healthapp.fragment.InformationFragment;
 import mcl.jejunu.healthapp.fragment.PastFragment;
 import mcl.jejunu.healthapp.fragment.PredictionFragment;
+import mcl.jejunu.healthapp.info.UserInfo;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -38,7 +41,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         toolbar.setTitle("목표");
-        getFragmentManager().beginTransaction().replace(R.id.fragment_layout, GoalFragment.getInstance()).commit();
+        getFragmentManager().beginTransaction().replace(R.id.fragment_layout, new GoalFragment()).commit();
+
     }
 
     @Override
@@ -58,19 +62,19 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_goal) {
             toolbar.setTitle("목표");
-            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, GoalFragment.getInstance()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, new GoalFragment()).commit();
         } else if (id == R.id.nav_past) {
             toolbar.setTitle("과거");
-            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, PastFragment.getInstance()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, new PastFragment()).commit();
         } else if (id == R.id.nav_current) {
             toolbar.setTitle("현재");
-            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, CurrentFragment.getInstance()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, new CurrentFragment()).commit();
         } else if (id == R.id.nav_prediction) {
             toolbar.setTitle("미래");
-            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, PredictionFragment.getInstance()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, new PredictionFragment()).commit();
         } else if (id == R.id.nav_information) {
             toolbar.setTitle("나의 정보");
-            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, InformationFragment.getInstance()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, new InformationFragment()).commit();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
