@@ -1,23 +1,20 @@
 package mcl.jejunu.healthapp.activity;
 
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.fragment.CurrentFragment;
 import mcl.jejunu.healthapp.fragment.GoalFragment;
 import mcl.jejunu.healthapp.fragment.InformationFragment;
 import mcl.jejunu.healthapp.fragment.PastFragment;
 import mcl.jejunu.healthapp.fragment.PredictionFragment;
-import mcl.jejunu.healthapp.info.UserInfo;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -30,7 +27,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

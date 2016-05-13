@@ -34,7 +34,7 @@ public class CurrentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LayoutInflater lf = getActivity().getLayoutInflater();
-        View view =  lf.inflate(R.layout.fragment_current, container, false);
+        View view = lf.inflate(R.layout.fragment_current, container, false);
 
         realm = Realm.getDefaultInstance();
 
