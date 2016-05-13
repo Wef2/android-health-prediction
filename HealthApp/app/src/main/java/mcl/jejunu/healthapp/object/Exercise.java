@@ -28,4 +28,5 @@ public class Exercise extends RealmObject {
     public void setDate(Date date) {
         this.date = date;
     }
+
 }

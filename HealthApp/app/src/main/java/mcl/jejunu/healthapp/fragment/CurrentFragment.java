@@ -16,8 +16,11 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
+import io.realm.Realm;
 import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.formatter.MyYAxisValueFormatter;
+import mcl.jejunu.healthapp.object.Exercise;
+import mcl.jejunu.healthapp.util.SharedPreferenceUtil;
 
 /**
  * Created by neo-202 on 2016-05-11.
@@ -25,14 +28,18 @@ import mcl.jejunu.healthapp.formatter.MyYAxisValueFormatter;
 public class CurrentFragment extends Fragment {
 
     private BarChart chart;
-    private int goalValue, currentValue, remainValue;
+    private long goalValue, currentValue, remainValue;
+    private Realm realm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_current, container, false);
+        LayoutInflater lf = getActivity().getLayoutInflater();
+        View view =  lf.inflate(R.layout.fragment_current, container, false);
 
-        goalValue = 10000;
-        currentValue = 4000;
+        realm = Realm.getDefaultInstance();
+
+        goalValue = SharedPreferenceUtil.getSharedPreference(getActivity(), "steps");
+        currentValue = (long) realm.where(Exercise.class).findAll().sum("count");
         remainValue = goalValue - currentValue;
         if (remainValue < 0) {
             remainValue = 0;

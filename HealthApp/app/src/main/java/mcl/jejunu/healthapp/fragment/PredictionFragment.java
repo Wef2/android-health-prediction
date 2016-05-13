@@ -16,8 +16,10 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
+import io.realm.Realm;
 import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.formatter.MyYAxisValueFormatter;
+import mcl.jejunu.healthapp.object.Exercise;
 
 /**
  * Created by neo-202 on 2016-05-11.
@@ -25,19 +27,25 @@ import mcl.jejunu.healthapp.formatter.MyYAxisValueFormatter;
 public class PredictionFragment extends Fragment {
 
     private BarChart barChart;
+    private long currentValue = 0;
+    private Realm realm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_prediction, container, false);
+        LayoutInflater lf = getActivity().getLayoutInflater();
+        View view =  lf.inflate(R.layout.fragment_prediction, container, false);
 
         barChart = (BarChart) view.findViewById(R.id.barChart);
 
+        realm = Realm.getDefaultInstance();
+        currentValue = (long) realm.where(Exercise.class).findAll().sum("count");
+
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
-        BarEntry goalEntry = new BarEntry(1, 0);
+        BarEntry goalEntry = new BarEntry(currentValue, 0);
         valsUser.add(goalEntry);
-        BarEntry currentEntry = new BarEntry(2, 1);
+        BarEntry currentEntry = new BarEntry(currentValue * 2, 1);
         valsUser.add(currentEntry);
-        BarEntry remainEntry = new BarEntry(3, 2);
+        BarEntry remainEntry = new BarEntry(currentValue * 7, 2);
         valsUser.add(remainEntry);
 
         BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");
@@ -49,9 +57,9 @@ public class PredictionFragment extends Fragment {
         dataSets.add(userDataSet);
 
         ArrayList<String> xVals = new ArrayList<String>();
-        xVals.add("목표");
         xVals.add("현재");
-        xVals.add("잔여");
+        xVals.add("1일 후");
+        xVals.add("1주일 후");
 
         BarData data = new BarData(xVals, dataSets);
         barChart.setData(data);
