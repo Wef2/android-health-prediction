@@ -1,6 +1,9 @@
 package mcl.jejunu.healthapp.fragment;
 
 import android.app.Fragment;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +28,7 @@ import mcl.jejunu.healthapp.util.SharedPreferenceUtil;
 /**
  * Created by neo-202 on 2016-05-11.
  */
-public class CurrentFragment extends Fragment {
+public class CurrentFragment extends Fragment{
 
     private BarChart chart;
     private long goalValue, currentValue, remainValue;

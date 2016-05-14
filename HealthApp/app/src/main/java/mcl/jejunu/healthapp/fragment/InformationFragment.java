@@ -12,7 +12,6 @@ import android.widget.Button;
 import java.util.Date;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.object.Exercise;
@@ -53,7 +52,7 @@ public class InformationFragment extends Fragment {
             public void onClick(View v) {
                 realm.beginTransaction();
                 RealmResults<Exercise> results = realm.where(Exercise.class).findAll();
-                for(int i = 0; i < results.size(); i++){
+                for (int i = 0; i < results.size(); i++) {
                     Log.i("Exercise", results.get(i).toString());
                 }
                 Log.i("Sum : ", String.valueOf(results.sum("count")));
