@@ -18,12 +18,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/notice.txt'
+    }
+
 }
 
 repositories {
     mavenCentral()
     maven { url "https://jitpack.io" }
     maven { url 'http://devrepo.kakao.com:8088/nexus/content/groups/public/' }
+    maven { url 'https://repo.spring.io/libs-milestone' }
 }
 
 dependencies {
@@ -34,4 +43,5 @@ dependencies {
     compile 'com.android.support:support-v4:23.3.0'
     compile 'com.android.support:design:23.3.0'
     compile group: 'com.kakao.sdk', name: 'kakaotalk', version: '1.1.16'
+    compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
 }
