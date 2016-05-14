@@ -21,6 +21,7 @@ import mcl.jejunu.healthapp.fragment.GoalFragment;
 import mcl.jejunu.healthapp.fragment.InformationFragment;
 import mcl.jejunu.healthapp.fragment.PastFragment;
 import mcl.jejunu.healthapp.fragment.PredictionFragment;
+import mcl.jejunu.healthapp.fragment.TestFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener {
@@ -77,6 +78,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_information) {
             toolbar.setTitle("나의 정보");
             getFragmentManager().beginTransaction().replace(R.id.fragment_layout, new InformationFragment()).commit();
+        } else if (id == R.id.nav_test) {
+            toolbar.setTitle("테스트");
+            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, new TestFragment()).commit();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
