@@ -9,17 +9,8 @@ import io.realm.RealmObject;
  */
 public class Goal extends RealmObject {
 
-    private int id;
     private int steps;
     private Date date;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public int getSteps() {
         return steps;

@@ -1,6 +1,7 @@
 package mcl.jejunu.healthapp.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
@@ -13,7 +14,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import io.realm.Realm;
 import mcl.jejunu.healthapp.R;
+import mcl.jejunu.healthapp.activity.GoalModificationActivity;
+import mcl.jejunu.healthapp.object.Body;
+import mcl.jejunu.healthapp.object.Goal;
 import mcl.jejunu.healthapp.util.SharedPreferenceUtil;
 
 /**
@@ -21,91 +26,49 @@ import mcl.jejunu.healthapp.util.SharedPreferenceUtil;
  */
 public class GoalFragment extends Fragment {
 
-    private EditText stepEditText, strideEditText;
-    private TextView distanceText, calorieText, timeText;
-    private Button saveButton;
-    private int steps = 0, stride = 0;
-    
+    private TextView stepsText, strideText, distanceText, calorieText, timeText;
+    private Button modifyButton;
+
+    private Realm realm;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LayoutInflater lf = getActivity().getLayoutInflater();
         View view =  lf.inflate(R.layout.fragment_goal, container, false);
 
-        steps = SharedPreferenceUtil.getSharedPreference(getActivity(), "steps");
-        stride = SharedPreferenceUtil.getSharedPreference(getActivity(), "stride");
-
-        stepEditText = (EditText) view.findViewById(R.id.stepEditText);
-        strideEditText = (EditText) view.findViewById(R.id.strideEditText);
+        stepsText = (TextView) view.findViewById(R.id.stepsText);
+        strideText = (TextView) view.findViewById(R.id.strideText);
         distanceText = (TextView) view.findViewById(R.id.distanceText);
         timeText = (TextView) view.findViewById(R.id.timeText);
         calorieText = (TextView) view.findViewById(R.id.calorieText);
 
-        stepEditText.setText(String.valueOf(steps));
-        strideEditText.setText(String.valueOf(stride));
-        distanceText.setText(String.valueOf(steps * stride / 100));
-        timeText.setText(String.valueOf((steps * stride / 100) / 70));
-        calorieText.setText(String.valueOf((steps * stride / 100) / 70 * 3));
-
-        saveButton = (Button) view.findViewById(R.id.saveButton);
-
-        stepEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (stepEditText.getText().length() == 0) {
-                    steps = 0;
-                } else {
-                    steps = Integer.valueOf(stepEditText.getText().toString());
-                }
-                distanceText.setText(String.valueOf(steps * stride / 100));
-                timeText.setText(String.valueOf((steps * stride / 100) / 70));
-                calorieText.setText(String.valueOf((steps * stride / 100) / 70 * 3));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        strideEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (strideEditText.getText().length() == 0) {
-                    stride = 0;
-                } else {
-                    stride = Integer.valueOf(strideEditText.getText().toString());
-                }
-                distanceText.setText(String.valueOf(steps * stride / 100));
-                timeText.setText(String.valueOf((steps * stride / 100) / 70));
-                calorieText.setText(String.valueOf((steps * stride / 100) / 70 * 3));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        modifyButton = (Button) view.findViewById(R.id.modifyButton);
+        modifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferenceUtil.putSharedPreference(getActivity(), "steps", steps);
-                SharedPreferenceUtil.putSharedPreference(getActivity(), "stride", stride);
-                Snackbar.make(v, "저장 성공!", Snackbar.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), GoalModificationActivity.class));
             }
         });
 
+        realm = Realm.getDefaultInstance();
         return view;
+    }
+
+    @Override
+    public void onResume(){
+        if(realm.where(Goal.class).findAll().size() > 0){
+            Goal goal = realm.where(Goal.class).findAll().last();
+            stepsText.setText(String.valueOf(goal.getSteps()));
+            if(realm.where(Body.class).findAll().size() > 0 ){
+                Body body = realm.where(Body.class).findAll().last();
+                int stride = (int) (body.getHeight() * 0.4);
+                strideText.setText(String.valueOf(stride));
+                distanceText.setText(String.valueOf(goal.getSteps() * stride / 100));
+                timeText.setText(String.valueOf((goal.getSteps() * stride / 100) / 70));
+                calorieText.setText(String.valueOf((goal.getSteps() * stride / 100) / 70 * 3));
+            }
+        }
+        super.onResume();
     }
 
 }

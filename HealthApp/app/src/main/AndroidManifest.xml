@@ -31,8 +31,12 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activity.LoginActivity" />
         <activity
-            android:name=".activity.ModificationActivity"
-            android:label="@string/title_activity_modification"
+            android:name=".activity.BodyModificationActivity"
+            android:label="@string/title_activity_body_modification"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.GoalModificationActivity"
+            android:label="@string/title_activity_goal_modification"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

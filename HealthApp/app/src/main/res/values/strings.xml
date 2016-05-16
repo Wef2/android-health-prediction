@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">HealthApp</string>
     <string name="title_activity_main">Health App</string>
-    <string name="title_activity_modification">정보 수정</string>
+    <string name="title_activity_goal_modification">목표 수정</string>
+    <string name="title_activity_body_modification">정보 수정</string>
 
     <string name="save_icon">Save</string>
 
