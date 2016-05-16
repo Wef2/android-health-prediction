@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">HealthApp</string>
     <string name="title_activity_main">Health App</string>
+    <string name="title_activity_modification">정보 수정</string>
+
+    <string name="save_icon">Save</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

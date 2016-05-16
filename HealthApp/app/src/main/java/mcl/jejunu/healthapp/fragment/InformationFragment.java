@@ -1,6 +1,7 @@
 package mcl.jejunu.healthapp.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -14,6 +15,7 @@ import java.util.Date;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import mcl.jejunu.healthapp.R;
+import mcl.jejunu.healthapp.activity.ModificationActivity;
 import mcl.jejunu.healthapp.object.Exercise;
 
 /**
@@ -21,7 +23,7 @@ import mcl.jejunu.healthapp.object.Exercise;
  */
 public class InformationFragment extends Fragment {
 
-    private Button testButton1, testButton2, testButton3;
+    private Button modificationButton, testButton1, testButton2, testButton3;
     private Realm realm;
     private int count = 100;
 
@@ -29,11 +31,19 @@ public class InformationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_information, container, false);
 
+        modificationButton = (Button) view.findViewById(R.id.modifyButton);
         testButton1 = (Button) view.findViewById(R.id.testButton1);
         testButton2 = (Button) view.findViewById(R.id.testButton2);
         testButton3 = (Button) view.findViewById(R.id.testButton3);
 
         realm = Realm.getDefaultInstance();
+
+        modificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), ModificationActivity.class));
+            }
+        });
 
         testButton1.setOnClickListener(new View.OnClickListener() {
             @Override
