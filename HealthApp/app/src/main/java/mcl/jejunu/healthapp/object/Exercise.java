@@ -11,7 +11,7 @@ import io.realm.RealmObject;
 public class Exercise extends RealmObject {
 
     private int count;
-    private Date date;
+    private String date;
 
     public int getCount() {
         return count;
@@ -21,11 +21,11 @@ public class Exercise extends RealmObject {
         this.count = count;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

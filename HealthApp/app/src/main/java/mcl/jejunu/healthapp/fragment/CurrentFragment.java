@@ -15,12 +15,15 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import io.realm.Realm;
 import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.formatter.MyYAxisValueFormatter;
+import mcl.jejunu.healthapp.formatter.TodayFormatter;
 import mcl.jejunu.healthapp.object.Exercise;
-import mcl.jejunu.healthapp.util.SharedPreferenceUtil;
+import mcl.jejunu.healthapp.object.Goal;
+import mcl.jejunu.healthapp.service.StepCounterService;
 
 /**
  * Created by neo-202 on 2016-05-11.
@@ -38,8 +41,16 @@ public class CurrentFragment extends Fragment {
 
         realm = Realm.getDefaultInstance();
 
-        goalValue = SharedPreferenceUtil.getSharedPreference(getActivity(), "steps");
-        currentValue = (long) realm.where(Exercise.class).findAll().sum("count");
+        final String today = TodayFormatter.format(new Date());
+        currentValue = 0;
+        if (realm.where(Exercise.class).equalTo("date", today).findAll().size() != 0) {
+            currentValue = realm.where(Exercise.class).equalTo("date", today).findAll().first().getCount();
+        }
+        goalValue = 0;
+        if (realm.where(Goal.class).findAll().size() > 0) {
+            Goal goal = realm.where(Goal.class).findAll().last();
+            goalValue = goal.getSteps();
+        }
         remainValue = goalValue - currentValue;
         if (remainValue < 0) {
             remainValue = 0;

@@ -15,10 +15,12 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import io.realm.Realm;
 import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.formatter.MyYAxisValueFormatter;
+import mcl.jejunu.healthapp.formatter.TodayFormatter;
 import mcl.jejunu.healthapp.object.Exercise;
 
 /**
@@ -38,7 +40,12 @@ public class PredictionFragment extends Fragment {
         barChart = (BarChart) view.findViewById(R.id.barChart);
 
         realm = Realm.getDefaultInstance();
-        currentValue = (long) realm.where(Exercise.class).findAll().sum("count");
+
+        final String today = TodayFormatter.format(new Date());
+        currentValue = 0;
+        if(realm.where(Exercise.class).equalTo("date", today).findAll().size() != 0){
+            currentValue = realm.where(Exercise.class).equalTo("date", today).findAll().first().getCount();
+        }
 
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
         BarEntry goalEntry = new BarEntry(currentValue, 0);
