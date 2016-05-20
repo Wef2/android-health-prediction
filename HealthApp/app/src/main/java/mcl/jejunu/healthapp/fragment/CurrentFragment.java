@@ -21,6 +21,7 @@ import io.realm.Realm;
 import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.formatter.MyYAxisValueFormatter;
 import mcl.jejunu.healthapp.formatter.TodayFormatter;
+import mcl.jejunu.healthapp.listener.StepUpdateListener;
 import mcl.jejunu.healthapp.object.Exercise;
 import mcl.jejunu.healthapp.object.Goal;
 import mcl.jejunu.healthapp.service.StepCounterService;
@@ -28,7 +29,7 @@ import mcl.jejunu.healthapp.service.StepCounterService;
 /**
  * Created by neo-202 on 2016-05-11.
  */
-public class CurrentFragment extends Fragment {
+public class CurrentFragment extends Fragment implements StepUpdateListener {
 
     private BarChart chart;
     private long goalValue, currentValue, remainValue;
@@ -38,6 +39,8 @@ public class CurrentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LayoutInflater lf = getActivity().getLayoutInflater();
         View view = lf.inflate(R.layout.fragment_current, container, false);
+
+        StepCounterService.instance.addStepUpdateListener(this);
 
         realm = Realm.getDefaultInstance();
 
@@ -94,4 +97,15 @@ public class CurrentFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onStepUpdate() {
+        final String today = TodayFormatter.format(new Date());
+        if (realm.where(Exercise.class).equalTo("date", today).findAll().size() != 0) {
+            currentValue = realm.where(Exercise.class).equalTo("date", today).findAll().first().getCount();
+        }
+        remainValue = goalValue - currentValue;
+        if (remainValue < 0) {
+            remainValue = 0;
+        }
+    }
 }

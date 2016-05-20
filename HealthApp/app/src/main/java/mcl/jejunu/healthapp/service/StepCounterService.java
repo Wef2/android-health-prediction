@@ -11,10 +11,12 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import io.realm.Realm;
 import mcl.jejunu.healthapp.formatter.TodayFormatter;
+import mcl.jejunu.healthapp.listener.StepUpdateListener;
 import mcl.jejunu.healthapp.object.Exercise;
 
 /**
@@ -22,7 +24,10 @@ import mcl.jejunu.healthapp.object.Exercise;
  */
 public class StepCounterService extends Service implements SensorEventListener {
 
+    public static StepCounterService instance;
     public static final String TAG = "Step Counter Service";
+
+    private ArrayList<StepUpdateListener> listeners;
 
     private SensorManager sensorManager;
     private Sensor sensor;
@@ -38,6 +43,8 @@ public class StepCounterService extends Service implements SensorEventListener {
 
     @Override
     public void onCreate() {
+        instance = this;
+        listeners = new ArrayList<>();
         Log.i(TAG, "CREATE");
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
@@ -70,10 +77,21 @@ public class StepCounterService extends Service implements SensorEventListener {
             exercise.setCount(exercise.getCount() + 1);
             realm.commitTransaction();
         }
+        notifyStepUpdate();
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    public void addStepUpdateListener(StepUpdateListener listener){
+        listeners.add(listener);
+    }
+
+    public void notifyStepUpdate(){
+        for(StepUpdateListener listener : listeners){
+            listener.onStepUpdate();
+        }
     }
 }
