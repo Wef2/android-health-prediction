@@ -19,7 +19,7 @@ import java.util.Date;
 
 import io.realm.Realm;
 import mcl.jejunu.healthapp.R;
-import mcl.jejunu.healthapp.formatter.MyYAxisValueFormatter;
+import mcl.jejunu.healthapp.formatter.StepYAxisValueFormatter;
 import mcl.jejunu.healthapp.formatter.TodayFormatter;
 import mcl.jejunu.healthapp.object.Exercise;
 
@@ -75,7 +75,7 @@ public class PredictionFragment extends Fragment {
         barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         barChart.getAxisLeft().setAxisMinValue(0);
         barChart.getAxisLeft().setDrawAxisLine(false);
-        barChart.getAxisLeft().setValueFormatter(new MyYAxisValueFormatter());
+        barChart.getAxisLeft().setValueFormatter(new StepYAxisValueFormatter());
         barChart.getAxisRight().setEnabled(false);
         barChart.setDescription("");
         barChart.getLegend().setEnabled(false);

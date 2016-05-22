@@ -19,9 +19,12 @@ import java.util.Date;
 
 import io.realm.Realm;
 import mcl.jejunu.healthapp.R;
-import mcl.jejunu.healthapp.formatter.MyYAxisValueFormatter;
+import mcl.jejunu.healthapp.formatter.CalorieYAxisValueFormatter;
+import mcl.jejunu.healthapp.formatter.StepYAxisValueFormatter;
+import mcl.jejunu.healthapp.formatter.TimeYAxisValueFormatter;
 import mcl.jejunu.healthapp.formatter.TodayFormatter;
 import mcl.jejunu.healthapp.listener.StepUpdateListener;
+import mcl.jejunu.healthapp.object.Body;
 import mcl.jejunu.healthapp.object.Exercise;
 import mcl.jejunu.healthapp.object.Goal;
 import mcl.jejunu.healthapp.service.StepCounterService;
@@ -31,8 +34,9 @@ import mcl.jejunu.healthapp.service.StepCounterService;
  */
 public class CurrentFragment extends Fragment implements StepUpdateListener {
 
-    private BarChart chart;
+    private BarChart chart, timeChart, calorieChart;
     private long goalValue, currentValue, remainValue;
+    private int stride;
     private Realm realm;
 
     @Override
@@ -44,6 +48,49 @@ public class CurrentFragment extends Fragment implements StepUpdateListener {
 
         realm = Realm.getDefaultInstance();
 
+        Body body = realm.where(Body.class).findFirst();
+        stride = (int) (body.getHeight() * 0.4);
+
+        chart = (BarChart) view.findViewById(R.id.currentBarChart);
+        chart.getXAxis().setDrawGridLines(false);
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        chart.getAxisLeft().setAxisMinValue(0);
+        chart.getAxisLeft().setDrawAxisLine(false);
+        chart.getAxisLeft().setValueFormatter(new StepYAxisValueFormatter());
+        chart.getAxisRight().setEnabled(false);
+        chart.setDescription("");
+        chart.getLegend().setEnabled(false);
+
+        timeChart = (BarChart) view.findViewById(R.id.timeChart);
+        timeChart.getXAxis().setDrawGridLines(false);
+        timeChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        timeChart.getAxisLeft().setAxisMinValue(0);
+        timeChart.getAxisLeft().setDrawAxisLine(false);
+        timeChart.getAxisLeft().setValueFormatter(new TimeYAxisValueFormatter());
+        timeChart.getAxisRight().setEnabled(false);
+        timeChart.setDescription("");
+
+        calorieChart = (BarChart) view.findViewById(R.id.calorieChart);
+        calorieChart.getXAxis().setDrawGridLines(false);
+        calorieChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        calorieChart.getAxisLeft().setAxisMinValue(0);
+        calorieChart.getAxisLeft().setDrawAxisLine(false);
+        calorieChart.getAxisLeft().setValueFormatter(new CalorieYAxisValueFormatter());
+        calorieChart.getAxisRight().setEnabled(false);
+        calorieChart.setDescription("");
+
+
+        setCurrentData();
+
+        return view;
+    }
+
+    @Override
+    public void onStepUpdate() {
+        setCurrentData();
+    }
+
+    public void setCurrentData(){
         final String today = TodayFormatter.format(new Date());
         currentValue = 0;
         if (realm.where(Exercise.class).equalTo("date", today).findAll().size() != 0) {
@@ -59,15 +106,10 @@ public class CurrentFragment extends Fragment implements StepUpdateListener {
             remainValue = 0;
         }
 
-        chart = (BarChart) view.findViewById(R.id.currentBarChart);
-
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
-        BarEntry goalEntry = new BarEntry(goalValue, 0);
-        valsUser.add(goalEntry);
-        BarEntry currentEntry = new BarEntry(currentValue, 1);
-        valsUser.add(currentEntry);
-        BarEntry remainEntry = new BarEntry(remainValue, 2);
-        valsUser.add(remainEntry);
+        valsUser.add(new BarEntry(goalValue, 0));
+        valsUser.add(new BarEntry(currentValue, 1));
+        valsUser.add(new BarEntry(remainValue, 2));
 
         BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");
         userDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
@@ -84,28 +126,43 @@ public class CurrentFragment extends Fragment implements StepUpdateListener {
 
         BarData data = new BarData(xVals, dataSets);
         chart.setData(data);
-
-        chart.getXAxis().setDrawGridLines(false);
-        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        chart.getAxisLeft().setAxisMinValue(0);
-        chart.getAxisLeft().setDrawAxisLine(false);
-        chart.getAxisLeft().setValueFormatter(new MyYAxisValueFormatter());
-        chart.getAxisRight().setEnabled(false);
-        chart.setDescription("");
-        chart.getLegend().setEnabled(false);
         chart.invalidate();
-        return view;
-    }
 
-    @Override
-    public void onStepUpdate() {
-        final String today = TodayFormatter.format(new Date());
-        if (realm.where(Exercise.class).equalTo("date", today).findAll().size() != 0) {
-            currentValue = realm.where(Exercise.class).equalTo("date", today).findAll().first().getCount();
-        }
-        remainValue = goalValue - currentValue;
-        if (remainValue < 0) {
-            remainValue = 0;
-        }
+        ArrayList<BarEntry> valsTime = new ArrayList<BarEntry>();
+        valsTime.add(new BarEntry(new float[]{((currentValue * stride / 100) / 70), (((goalValue - currentValue) * stride / 100) / 70)}, 0));
+
+        BarDataSet timeDataSet = new BarDataSet(valsTime, "시간");
+        timeDataSet.setStackLabels(new String[]{"현재", "잔여"});
+        timeDataSet.setColors(ColorTemplate.PASTEL_COLORS);
+        timeDataSet.setValueTextSize(10);
+        timeDataSet.setBarSpacePercent(30);
+
+        ArrayList<IBarDataSet> timeDataSets = new ArrayList<IBarDataSet>();
+        timeDataSets.add(timeDataSet);
+
+        ArrayList<String> timeXVals = new ArrayList<String>();
+        timeXVals.add("시간");
+        BarData timeData = new BarData(timeXVals, timeDataSets);
+        timeChart.setData(timeData);
+        timeChart.invalidate();
+
+
+        ArrayList<BarEntry> valsCalorie = new ArrayList<BarEntry>();
+        valsCalorie.add(new BarEntry(new float[]{((currentValue * stride / 100) / 70) * 3, (((goalValue - currentValue) * stride / 100) / 70) * 3}, 0));
+
+        BarDataSet calorieDataSet = new BarDataSet(valsCalorie, "칼로리");
+        calorieDataSet.setStackLabels(new String[]{"현재", "잔여"});
+        calorieDataSet.setColors(ColorTemplate.LIBERTY_COLORS);
+        calorieDataSet.setValueTextSize(10);
+        calorieDataSet.setBarSpacePercent(30);
+
+        ArrayList<IBarDataSet> calorieDataSets = new ArrayList<IBarDataSet>();
+        calorieDataSets.add(calorieDataSet);
+
+        ArrayList<String> calorieXVals = new ArrayList<String>();
+        calorieXVals.add("시간");
+        BarData calorieData = new BarData(calorieXVals, calorieDataSets);
+        calorieChart.setData(calorieData);
+        calorieChart.invalidate();
     }
 }

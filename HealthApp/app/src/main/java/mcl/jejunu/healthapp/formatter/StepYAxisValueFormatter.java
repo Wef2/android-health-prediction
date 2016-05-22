@@ -8,7 +8,7 @@ import mcl.jejunu.healthapp.R;
 /**
  * Created by neo-202 on 2016-05-11.
  */
-public class MyYAxisValueFormatter implements YAxisValueFormatter {
+public class StepYAxisValueFormatter implements YAxisValueFormatter {
 
     @Override
     public String getFormattedValue(float value, YAxis yAxis) {

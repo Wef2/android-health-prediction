@@ -31,7 +31,6 @@ public class StepCounterService extends Service implements SensorEventListener {
 
     private SensorManager sensorManager;
     private Sensor sensor;
-    private int totalCount = 0;
 
     private Realm realm;
 
