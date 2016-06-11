@@ -17,7 +17,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:text="○○○"
+            android:text="홍길동"
             android:textSize="25dp" />
 
         <TextView

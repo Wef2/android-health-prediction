@@ -2,6 +2,7 @@ package mcl.jejunu.healthapp.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,10 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import io.realm.Realm;
 import mcl.jejunu.healthapp.R;
@@ -91,10 +95,13 @@ public class CurrentFragment extends Fragment implements StepUpdateListener {
     }
 
     public void setCurrentData(){
-        final String today = DateFormatter.dayFormat(new Date());
         currentValue = 0;
-        if (realm.where(Exercise.class).beginsWith("date", today).findAll().size() != 0) {
-            currentValue = (Long)realm.where(Exercise.class).beginsWith("date", today).findAll().sum("count");
+        String todayString = DateFormatter.dayFormat(new Date());
+        Date today = DateFormatter.toDateDay(todayString);
+        Date tomorrow = DateFormatter.theDayAfterXDays(today, 1);
+
+        if (realm.where(Exercise.class).between("date", today, tomorrow).findAll().size() != 0) {
+            currentValue = (Long)realm.where(Exercise.class).between("date", today, tomorrow).findAll().sum("count");
         }
         goalValue = 0;
         if (realm.where(Goal.class).findAll().size() > 0) {
@@ -160,7 +167,7 @@ public class CurrentFragment extends Fragment implements StepUpdateListener {
         calorieDataSets.add(calorieDataSet);
 
         ArrayList<String> calorieXVals = new ArrayList<String>();
-        calorieXVals.add("시간");
+        calorieXVals.add("칼로리");
         BarData calorieData = new BarData(calorieXVals, calorieDataSets);
         calorieChart.setData(calorieData);
         calorieChart.invalidate();

@@ -41,10 +41,13 @@ public class PredictionFragment extends Fragment {
 
         realm = Realm.getDefaultInstance();
 
-        final String today = DateFormatter.dayFormat(new Date());
         currentValue = 0;
-        if(realm.where(Exercise.class).equalTo("date", DateFormatter.toDate(today)).findAll().size() != 0){
-            currentValue = realm.where(Exercise.class).equalTo("date", DateFormatter.toDate(today)).findAll().first().getCount();
+        String todayString = DateFormatter.dayFormat(new Date());
+        Date today = DateFormatter.toDateDay(todayString);
+        Date tomorrow = DateFormatter.theDayAfterXDays(today, 1);
+
+        if (realm.where(Exercise.class).between("date", today, tomorrow).findAll().size() != 0) {
+            currentValue = (Long)realm.where(Exercise.class).between("date", today, tomorrow).findAll().sum("count");
         }
 
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();

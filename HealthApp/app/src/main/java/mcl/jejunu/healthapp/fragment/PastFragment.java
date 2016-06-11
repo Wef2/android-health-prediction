@@ -15,6 +15,7 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -41,12 +42,35 @@ public class PastFragment extends Fragment {
 
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
         ArrayList<String> xVals = new ArrayList<String>();
-        RealmResults<Exercise> exercises = realm.where(Exercise.class).findAll();
-        for(int i = 0; i< exercises.size(); i++){
-            BarEntry entry = new BarEntry(exercises.get(i).getCount(), i);
-            valsUser.add(entry);
-            xVals.add(DateFormatter.minuteFormat(exercises.get(i).getDate()));
+        RealmResults<Exercise> exercises = realm.where(Exercise.class).findAllSorted("date");
+        Date firstDate = exercises.first().getDate();
+        Date lastDate = exercises.last().getDate();
+
+        String firstDateString = DateFormatter.dayFormat(firstDate);
+        Date firstDateStart = DateFormatter.toDateDay(firstDateString);
+        Date firstDateEnd = DateFormatter.theDayAfterXDays(firstDateStart, 1);
+
+        String lastDateString = DateFormatter.dayFormat(lastDate);
+        Date lastDateStart = DateFormatter.toDateDay(lastDateString);
+        Date lastDateEnd = DateFormatter.theDayAfterXDays(lastDateStart, 1);
+
+        int index = 0;
+        while(!(firstDateStart.equals(lastDateStart))){
+            if (realm.where(Exercise.class).between("date", firstDateStart, firstDateEnd).findAll().size() != 0) {
+                long count = (Long)realm.where(Exercise.class).between("date", firstDateStart, firstDateEnd).findAll().sum("count");
+                BarEntry entry = new BarEntry(count, index);
+                valsUser.add(entry);
+                xVals.add(DateFormatter.dayFormat(firstDateStart));
+                index = index + 1;
+            }
         }
+        if (realm.where(Exercise.class).between("date", lastDateStart, lastDateEnd).findAll().size() != 0) {
+            long count = (Long)realm.where(Exercise.class).between("date", lastDateStart, lastDateEnd).findAll().sum("count");
+            BarEntry entry = new BarEntry(count, index);
+            valsUser.add(entry);
+            xVals.add(DateFormatter.dayFormat(lastDateStart));
+        }
+
 
         BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");
         userDataSet.setColors(ColorTemplate.JOYFUL_COLORS);

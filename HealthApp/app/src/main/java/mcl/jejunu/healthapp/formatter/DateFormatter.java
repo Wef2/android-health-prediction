@@ -4,7 +4,10 @@ package mcl.jejunu.healthapp.formatter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * Created by Kim on 2016-05-20.
@@ -34,4 +37,26 @@ public class DateFormatter {
         return date;
     }
 
+    public static Date toDateDay(String dateString) {
+        Date date = null;
+        try {
+            date = dayFormatter.parse(dateString);
+
+        } catch (ParseException e1) {
+            e1.printStackTrace();
+        }
+        return date;
+    }
+
+    public static Date theDayAfterXDays(Date date, int xdDays){
+        Calendar cal = new GregorianCalendar(Locale.getDefault());
+        cal.setTime(date);
+        cal.add(Calendar.DAY_OF_YEAR, xdDays);
+        date = cal.getTime();
+        return date;
+    }
+
+    public static void test(){
+
+    }
 }
