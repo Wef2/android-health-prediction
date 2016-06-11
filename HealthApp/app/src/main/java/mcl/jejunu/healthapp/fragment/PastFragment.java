@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import mcl.jejunu.healthapp.R;
+import mcl.jejunu.healthapp.formatter.DateFormatter;
 import mcl.jejunu.healthapp.formatter.StepYAxisValueFormatter;
 import mcl.jejunu.healthapp.object.Exercise;
 
@@ -44,7 +45,7 @@ public class PastFragment extends Fragment {
         for(int i = 0; i< exercises.size(); i++){
             BarEntry entry = new BarEntry(exercises.get(i).getCount(), i);
             valsUser.add(entry);
-            xVals.add(exercises.get(i).getDate());
+            xVals.add(DateFormatter.minuteFormat(exercises.get(i).getDate()));
         }
 
         BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");

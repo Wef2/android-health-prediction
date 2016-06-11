@@ -20,7 +20,7 @@ import java.util.Date;
 import io.realm.Realm;
 import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.formatter.StepYAxisValueFormatter;
-import mcl.jejunu.healthapp.formatter.TodayFormatter;
+import mcl.jejunu.healthapp.formatter.DateFormatter;
 import mcl.jejunu.healthapp.object.Exercise;
 
 /**
@@ -41,10 +41,10 @@ public class PredictionFragment extends Fragment {
 
         realm = Realm.getDefaultInstance();
 
-        final String today = TodayFormatter.format(new Date());
+        final String today = DateFormatter.dayFormat(new Date());
         currentValue = 0;
-        if(realm.where(Exercise.class).equalTo("date", today).findAll().size() != 0){
-            currentValue = realm.where(Exercise.class).equalTo("date", today).findAll().first().getCount();
+        if(realm.where(Exercise.class).equalTo("date", DateFormatter.toDate(today)).findAll().size() != 0){
+            currentValue = realm.where(Exercise.class).equalTo("date", DateFormatter.toDate(today)).findAll().first().getCount();
         }
 
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();

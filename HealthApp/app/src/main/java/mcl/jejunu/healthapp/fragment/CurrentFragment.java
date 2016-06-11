@@ -22,7 +22,7 @@ import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.formatter.CalorieYAxisValueFormatter;
 import mcl.jejunu.healthapp.formatter.StepYAxisValueFormatter;
 import mcl.jejunu.healthapp.formatter.TimeYAxisValueFormatter;
-import mcl.jejunu.healthapp.formatter.TodayFormatter;
+import mcl.jejunu.healthapp.formatter.DateFormatter;
 import mcl.jejunu.healthapp.listener.StepUpdateListener;
 import mcl.jejunu.healthapp.object.Body;
 import mcl.jejunu.healthapp.object.Exercise;
@@ -91,10 +91,10 @@ public class CurrentFragment extends Fragment implements StepUpdateListener {
     }
 
     public void setCurrentData(){
-        final String today = TodayFormatter.format(new Date());
+        final String today = DateFormatter.dayFormat(new Date());
         currentValue = 0;
-        if (realm.where(Exercise.class).equalTo("date", today).findAll().size() != 0) {
-            currentValue = realm.where(Exercise.class).equalTo("date", today).findAll().first().getCount();
+        if (realm.where(Exercise.class).beginsWith("date", today).findAll().size() != 0) {
+            currentValue = (Long)realm.where(Exercise.class).beginsWith("date", today).findAll().sum("count");
         }
         goalValue = 0;
         if (realm.where(Goal.class).findAll().size() > 0) {

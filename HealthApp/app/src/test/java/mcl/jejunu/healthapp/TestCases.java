@@ -13,7 +13,7 @@ import java.util.Date;
 public class TestCases {
     @Test
     public void dateCheck() throws Exception {
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:00");
         System.out.println(formatter.format(new Date()));
     }
 

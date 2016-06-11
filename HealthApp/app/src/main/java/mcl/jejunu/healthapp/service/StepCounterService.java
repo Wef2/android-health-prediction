@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import io.realm.Realm;
-import mcl.jejunu.healthapp.formatter.TodayFormatter;
+import mcl.jejunu.healthapp.formatter.DateFormatter;
 import mcl.jejunu.healthapp.listener.StepUpdateListener;
 import mcl.jejunu.healthapp.object.Exercise;
 
@@ -60,18 +60,18 @@ public class StepCounterService extends Service implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         Log.i(TAG, "SENSOR CHANGED");
-        final String today = TodayFormatter.format(new Date());
-        if (realm.where(Exercise.class).equalTo("date", today).findAll().size() == 0) {
+        final String currentDatetime = DateFormatter.minuteFormat(new Date());
+        if (realm.where(Exercise.class).equalTo("date", DateFormatter.toDate(currentDatetime)).findAll().size() == 0) {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
                     Exercise exercise = realm.createObject(Exercise.class);
-                    exercise.setDate(today);
+                    exercise.setDate(DateFormatter.toDate(currentDatetime));
                     exercise.setCount(1);
                 }
             });
         } else {
-            final Exercise exercise = realm.where(Exercise.class).equalTo("date", today).findAll().first();
+            final Exercise exercise = realm.where(Exercise.class).equalTo("date", DateFormatter.toDate(currentDatetime)).findAll().first();
             realm.beginTransaction();
             exercise.setCount(exercise.getCount() + 1);
             realm.commitTransaction();
