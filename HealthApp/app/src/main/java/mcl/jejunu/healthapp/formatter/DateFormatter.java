@@ -17,6 +17,7 @@ public class DateFormatter {
     private static DateFormat minuteFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:00");
     private static DateFormat dayFormatter = new SimpleDateFormat("yyyy-MM-dd");
     private static DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    private static DateFormat hmFormatter = new SimpleDateFormat("HH:mm");
 
     public static String minuteFormat(Date date) {
         return minuteFormatter.format(date);
@@ -24,6 +25,10 @@ public class DateFormatter {
 
     public static String dayFormat(Date date) {
         return dayFormatter.format(date);
+    }
+
+    public static String hmFormat(Date date) {
+        return hmFormatter.format(date);
     }
 
     public static Date toDate(String dateString) {
@@ -48,7 +53,7 @@ public class DateFormatter {
         return date;
     }
 
-    public static Date theDayAfterXDays(Date date, int xdDays){
+    public static Date theDayAfterXDays(Date date, int xdDays) {
         Calendar cal = new GregorianCalendar(Locale.getDefault());
         cal.setTime(date);
         cal.add(Calendar.DAY_OF_YEAR, xdDays);
@@ -56,7 +61,7 @@ public class DateFormatter {
         return date;
     }
 
-    public static void test(){
+    public static void test() {
 
     }
 }

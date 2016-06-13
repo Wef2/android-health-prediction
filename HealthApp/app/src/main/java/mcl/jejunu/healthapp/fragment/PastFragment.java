@@ -61,6 +61,8 @@ public class PastFragment extends Fragment {
                 BarEntry entry = new BarEntry(count, index);
                 valsUser.add(entry);
                 xVals.add(DateFormatter.dayFormat(firstDateStart));
+                firstDateStart = DateFormatter.theDayAfterXDays(firstDateStart, 1);
+                firstDateEnd = DateFormatter.theDayAfterXDays(firstDateEnd, 1);
                 index = index + 1;
             }
         }

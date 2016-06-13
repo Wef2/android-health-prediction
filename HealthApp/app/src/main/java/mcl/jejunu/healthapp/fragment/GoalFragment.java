@@ -17,6 +17,7 @@ import android.widget.Toast;
 import io.realm.Realm;
 import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.activity.GoalModificationActivity;
+import mcl.jejunu.healthapp.formatter.NumberFormatter;
 import mcl.jejunu.healthapp.object.Body;
 import mcl.jejunu.healthapp.object.Goal;
 import mcl.jejunu.healthapp.util.SharedPreferenceUtil;
@@ -65,7 +66,7 @@ public class GoalFragment extends Fragment {
                 strideText.setText(String.valueOf(stride));
                 distanceText.setText(String.valueOf(goal.getSteps() * stride / 100));
                 timeText.setText(String.valueOf((goal.getSteps() * stride / 100) / 70));
-                calorieText.setText(String.valueOf((goal.getSteps() * stride / 100) / 70 * 3));
+                calorieText.setText(NumberFormatter.doubleToIntString((goal.getSteps() * stride / 100) / 70 * 0.0669 * body.getWeight()));
             }
         }
         super.onResume();

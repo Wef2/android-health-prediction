@@ -40,8 +40,10 @@ public class CurrentFragment extends Fragment implements StepUpdateListener {
 
     private BarChart chart, timeChart, calorieChart;
     private long goalValue, currentValue, remainValue;
-    private int stride;
     private Realm realm;
+
+    private Body body;
+    private int stride;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,7 +54,7 @@ public class CurrentFragment extends Fragment implements StepUpdateListener {
 
         realm = Realm.getDefaultInstance();
 
-        Body body = realm.where(Body.class).findFirst();
+        body = realm.where(Body.class).findAll().last();
         stride = (int) (body.getHeight() * 0.4);
 
         chart = (BarChart) view.findViewById(R.id.currentBarChart);
@@ -155,7 +157,8 @@ public class CurrentFragment extends Fragment implements StepUpdateListener {
 
 
         ArrayList<BarEntry> valsCalorie = new ArrayList<BarEntry>();
-        valsCalorie.add(new BarEntry(new float[]{((currentValue * stride / 100) / 70) * 3, (((goalValue - currentValue) * stride / 100) / 70) * 3}, 0));
+        valsCalorie.add(new BarEntry(new float[]{(float)(((currentValue * stride / 100) / 70)  * 0.0669 * body.getWeight()),(float)(
+                (((goalValue - currentValue) * stride / 100) / 70)  * 0.0669 * body.getWeight())}, 0));
 
         BarDataSet calorieDataSet = new BarDataSet(valsCalorie, "칼로리");
         calorieDataSet.setStackLabels(new String[]{"현재", "잔여"});
