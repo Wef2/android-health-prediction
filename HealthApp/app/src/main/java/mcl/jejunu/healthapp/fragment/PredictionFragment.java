@@ -3,7 +3,6 @@ package mcl.jejunu.healthapp.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,15 +19,12 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
 import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.formatter.DateFormatter;
 import mcl.jejunu.healthapp.formatter.StepYAxisValueFormatter;
@@ -58,7 +54,7 @@ public class PredictionFragment extends Fragment implements PopupMenu.OnMenuItem
             @Override
             public void onClick(View v) {
                 popupMenu = new PopupMenu(getActivity(), selectButton);
-                popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+                popupMenu.getMenuInflater().inflate(R.menu.prediction_popup_menu, popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(PredictionFragment.this);
                 popupMenu.show();
             }
@@ -88,26 +84,22 @@ public class PredictionFragment extends Fragment implements PopupMenu.OnMenuItem
         Date currentHour = DateFormatter.toDateHour(hourString);
         Date afterOneHour = DateFormatter.theHourAfterXHours(currentHour, 1);
 
-        RealmResults<Exercise> exercises = realm.where(Exercise.class).between("date", currentHour, afterOneHour).findAll();
-
-        for (Exercise exercise : exercises) {
-            String dateString = DateFormatter.hourFormat(exercise.getDate());
-            AtomicInteger count = hourHashtable.get(dateString);
-            if (count == null) {
-                count = new AtomicInteger(0);
-            }
-            count.addAndGet(exercise.getCount());
-            hourHashtable.put(dateString, count);
-        }
-
-        List<String> keyList = new ArrayList<String>(hourHashtable.keySet());
-        Collections.sort(keyList);
+        RealmResults<Exercise> currentExercies = realm.where(Exercise.class).between("date", currentHour, afterOneHour).findAll();
 
         int index = 0;
-        for (String key : keyList){
-            BarEntry barEntry = new BarEntry(hourHashtable.get(key).get(), index);
-            valsUser.add(barEntry);
-            xVals.add(key);
+
+        int currentValue = currentExercies.sum("count").intValue();
+
+        BarEntry currentBarEntry = new BarEntry(currentValue, index);
+        valsUser.add(currentBarEntry);
+        xVals.add(DateFormatter.hourFormat(currentExercies.first().getDate()));
+        index = index + 1;
+
+        for (int i = 1; i <= 3; i++){
+//            int predictValue = PredictionFilter.predict(i,currentValue, )
+            BarEntry predictionBarEntry = new BarEntry(i, index);
+            valsUser.add(predictionBarEntry);
+            xVals.add(i+"시간 후");
             index = index + 1;
         }
 
@@ -127,32 +119,39 @@ public class PredictionFragment extends Fragment implements PopupMenu.OnMenuItem
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
         ArrayList<String> xVals = new ArrayList<String>();
 
-        Hashtable<String, AtomicInteger> hourHashtable = new Hashtable<>();
+        Hashtable<String, AtomicInteger> dayHashtable = new Hashtable<>();
 
         String todayString = DateFormatter.dayFormat(new Date());
         Date today = DateFormatter.toDateDay(todayString);
         Date tomorrow = DateFormatter.theDayAfterXDays(today, 1);
 
-        RealmResults<Exercise> exercises = realm.where(Exercise.class).between("date", today, tomorrow).findAll();
+        RealmResults<Exercise> todayExercises = realm.where(Exercise.class).between("date", today, tomorrow).findAll();
 
-        for (Exercise exercise : exercises) {
+        for (Exercise exercise : todayExercises) {
             String dateString = DateFormatter.dayFormat(exercise.getDate());
-            AtomicInteger count = hourHashtable.get(dateString);
+            AtomicInteger count = dayHashtable.get(dateString);
             if (count == null) {
                 count = new AtomicInteger(0);
             }
             count.addAndGet(exercise.getCount());
-            hourHashtable.put(dateString, count);
+            dayHashtable.put(dateString, count);
         }
 
-        List<String> keyList = new ArrayList<String>(hourHashtable.keySet());
+        List<String> keyList = new ArrayList<String>(dayHashtable.keySet());
         Collections.sort(keyList);
 
         int index = 0;
         for (String key : keyList){
-            BarEntry barEntry = new BarEntry(hourHashtable.get(key).get(), index);
+            BarEntry barEntry = new BarEntry(dayHashtable.get(key).get(), index);
             valsUser.add(barEntry);
             xVals.add(key);
+            index = index + 1;
+        }
+
+        for (int i = 1; i <= 3; i++){
+            BarEntry barEntry = new BarEntry(i, index);
+            valsUser.add(barEntry);
+            xVals.add(i+"일 후");
             index = index + 1;
         }
 
@@ -194,6 +193,13 @@ public class PredictionFragment extends Fragment implements PopupMenu.OnMenuItem
             BarEntry barEntry = new BarEntry(hourHashtable.get(key).get(), index);
             valsUser.add(barEntry);
             xVals.add(key);
+            index = index + 1;
+        }
+
+        for (int i = 1; i <= 3; i++){
+            BarEntry barEntry = new BarEntry(i, index);
+            valsUser.add(barEntry);
+            xVals.add(i+"개월 후");
             index = index + 1;
         }
 

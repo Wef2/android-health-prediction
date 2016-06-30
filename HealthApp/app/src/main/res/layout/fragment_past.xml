@@ -30,6 +30,15 @@
             android:textSize="25dp" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/select_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="기간 선택" />
+
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/barChart"
         android:layout_width="match_parent"

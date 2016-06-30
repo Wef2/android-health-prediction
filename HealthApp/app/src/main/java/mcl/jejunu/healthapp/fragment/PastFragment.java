@@ -2,9 +2,12 @@ package mcl.jejunu.healthapp.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -27,10 +30,12 @@ import mcl.jejunu.healthapp.object.Exercise;
 /**
  * Created by neo-202 on 2016-05-11.
  */
-public class PastFragment extends Fragment {
+public class PastFragment extends Fragment implements PopupMenu.OnMenuItemClickListener {
 
     private BarChart barChart;
     private Realm realm;
+    private Button selectButton;
+    private PopupMenu popupMenu;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,6 +44,17 @@ public class PastFragment extends Fragment {
         barChart = (BarChart) view.findViewById(R.id.barChart);
 
         realm = Realm.getDefaultInstance();
+
+        selectButton = (Button) view.findViewById(R.id.select_button);
+        selectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupMenu = new PopupMenu(getActivity(), selectButton);
+                popupMenu.getMenuInflater().inflate(R.menu.past_popup_menu, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(PastFragment.this);
+                popupMenu.show();
+            }
+        });
 
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
         ArrayList<String> xVals = new ArrayList<String>();
@@ -99,4 +115,19 @@ public class PastFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+
+
+        switch (item.getItemId()) {
+            case R.id.menu1:
+                break;
+            case R.id.menu2:
+                break;
+            case R.id.menu3:
+                break;
+        }
+
+        return false;
+    }
 }

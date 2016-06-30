@@ -20,6 +20,7 @@ public class DateFormatter {
     private static DateFormat dayFormatter = new SimpleDateFormat("yyyy-MM-dd");
     private static DateFormat dayFormatter2 = new SimpleDateFormat("yyyy년 MM월 dd일");
     private static DateFormat monthFormatter = new SimpleDateFormat("yyyy년 MM월");
+    private static DateFormat monthFormatter2 = new SimpleDateFormat("yyyy-MM");
     private static DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static DateFormat hmFormatter = new SimpleDateFormat("HH:mm");
 
@@ -41,6 +42,10 @@ public class DateFormatter {
 
     public static String monthFormat(Date date) {
         return monthFormatter.format(date);
+    }
+
+    public static String monthFormat2(Date date) {
+        return monthFormatter2.format(date);
     }
 
     public static String dayFormat(Date date) {
@@ -101,7 +106,13 @@ public class DateFormatter {
         return date;
     }
 
-    public static void test() {
 
+    public static Date theMonthAfterXMonths(Date date, int xMonths) {
+        Calendar cal = new GregorianCalendar(Locale.getDefault());
+        cal.setTime(date);
+        cal.add(Calendar.MONTH, xMonths);
+        date = cal.getTime();
+        return date;
     }
+
 }
