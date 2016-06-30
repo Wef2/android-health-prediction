@@ -7,6 +7,10 @@
             android:icon="@drawable/ic_check_24dp"
             android:title="목표" />
         <item
+            android:id="@+id/nav_record"
+            android:icon="@drawable/ic_equalizer_black_24dp"
+            android:title="기록" />
+        <item
             android:id="@+id/nav_past"
             android:icon="@drawable/ic_reply_24dp"
             android:title="과거" />
@@ -16,7 +20,7 @@
             android:title="현재" />
         <item
             android:id="@+id/nav_prediction"
-            android:icon="@drawable/ic_trending_up_24dp"
+            android:icon="@drawable/ic_trending_up_black_24dp"
             android:title="미래" />
         <item
             android:id="@+id/nav_information"

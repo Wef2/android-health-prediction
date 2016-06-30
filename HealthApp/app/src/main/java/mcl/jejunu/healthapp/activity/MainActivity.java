@@ -1,10 +1,8 @@
 package mcl.jejunu.healthapp.activity;
 
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import mcl.jejunu.healthapp.R;
@@ -21,6 +18,7 @@ import mcl.jejunu.healthapp.fragment.GoalFragment;
 import mcl.jejunu.healthapp.fragment.InformationFragment;
 import mcl.jejunu.healthapp.fragment.PastFragment;
 import mcl.jejunu.healthapp.fragment.PredictionFragment;
+import mcl.jejunu.healthapp.fragment.RecordFragment;
 import mcl.jejunu.healthapp.fragment.TestFragment;
 
 public class MainActivity extends AppCompatActivity
@@ -66,6 +64,9 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_goal) {
             toolbar.setTitle("목표");
             getFragmentManager().beginTransaction().replace(R.id.fragment_layout, new GoalFragment()).commit();
+        } else if (id == R.id.nav_record) {
+            toolbar.setTitle("기록");
+            getFragmentManager().beginTransaction().replace(R.id.fragment_layout, new RecordFragment()).commit();
         } else if (id == R.id.nav_past) {
             toolbar.setTitle("과거");
             getFragmentManager().beginTransaction().replace(R.id.fragment_layout, new PastFragment()).commit();

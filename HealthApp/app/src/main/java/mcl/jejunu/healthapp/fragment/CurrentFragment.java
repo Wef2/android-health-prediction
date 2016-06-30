@@ -38,12 +38,14 @@ import mcl.jejunu.healthapp.service.StepCounterService;
  */
 public class CurrentFragment extends Fragment implements StepUpdateListener {
 
-    private BarChart chart, timeChart, calorieChart;
-    private long goalValue, currentValue, remainValue;
     private Realm realm;
 
     private Body body;
     private int stride;
+
+    private long goalValue, currentValue, remainValue;
+
+    private BarChart chart, timeChart, calorieChart;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

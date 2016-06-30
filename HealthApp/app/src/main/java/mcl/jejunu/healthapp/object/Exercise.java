@@ -29,4 +29,11 @@ public class Exercise extends RealmObject {
         this.date = date;
     }
 
+    @Override
+    public String toString() {
+        return "Exercise{" +
+                "count=" + count +
+                ", date=" + date +
+                '}';
+    }
 }

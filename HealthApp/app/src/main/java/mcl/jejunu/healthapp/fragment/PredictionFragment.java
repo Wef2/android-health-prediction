@@ -2,9 +2,13 @@ package mcl.jejunu.healthapp.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.PopupMenu;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -12,60 +16,55 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import mcl.jejunu.healthapp.R;
-import mcl.jejunu.healthapp.formatter.StepYAxisValueFormatter;
 import mcl.jejunu.healthapp.formatter.DateFormatter;
+import mcl.jejunu.healthapp.formatter.StepYAxisValueFormatter;
 import mcl.jejunu.healthapp.object.Exercise;
 
 /**
  * Created by neo-202 on 2016-05-11.
  */
-public class PredictionFragment extends Fragment {
+public class PredictionFragment extends Fragment implements PopupMenu.OnMenuItemClickListener {
 
     private BarChart barChart;
     private Realm realm;
+    private Button selectButton;
+    private PopupMenu popupMenu;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LayoutInflater lf = getActivity().getLayoutInflater();
-        View view =  lf.inflate(R.layout.fragment_prediction, container, false);
+        View view = lf.inflate(R.layout.fragment_prediction, container, false);
 
         barChart = (BarChart) view.findViewById(R.id.barChart);
 
         realm = Realm.getDefaultInstance();
 
-        String todayString = DateFormatter.dayFormat(new Date());
-        Date today = DateFormatter.toDateDay(todayString);
-        Date tomorrow = DateFormatter.theDayAfterXDays(today, 1);
+        selectButton = (Button) view.findViewById(R.id.select_button);
+        selectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupMenu = new PopupMenu(getActivity(), selectButton);
+                popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(PredictionFragment.this);
+                popupMenu.show();
+            }
+        });
 
-        ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
-        ArrayList<String> xVals = new ArrayList<String>();
-
-        RealmResults<Exercise> exercises = realm.where(Exercise.class).between("date", today, tomorrow).greaterThan("count", 1).findAll();
-        int index = 0;
-        for(Exercise exercise : exercises){
-                BarEntry barEntry = new BarEntry(exercise.getCount(), index);
-                valsUser.add(barEntry);
-                xVals.add(DateFormatter.hmFormat(exercise.getDate()));
-                index = index + 1;
-        }
-
-        BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");
-        userDataSet.setValueTextSize(10);
-        userDataSet.setBarSpacePercent(30);
-
-        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-        dataSets.add(userDataSet);
-
-        BarData data = new BarData(xVals, dataSets);
-        barChart.setData(data);
+        setDataByHour();
 
         barChart.getXAxis().setDrawGridLines(false);
         barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -79,4 +78,152 @@ public class PredictionFragment extends Fragment {
         return view;
     }
 
+    public void setDataByHour() {
+        ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
+        ArrayList<String> xVals = new ArrayList<String>();
+
+        Hashtable<String, AtomicInteger> hourHashtable = new Hashtable<>();
+
+        String hourString = DateFormatter.hourFormat2(new Date());
+        Date currentHour = DateFormatter.toDateHour(hourString);
+        Date afterOneHour = DateFormatter.theHourAfterXHours(currentHour, 1);
+
+        RealmResults<Exercise> exercises = realm.where(Exercise.class).between("date", currentHour, afterOneHour).findAll();
+
+        for (Exercise exercise : exercises) {
+            String dateString = DateFormatter.hourFormat(exercise.getDate());
+            AtomicInteger count = hourHashtable.get(dateString);
+            if (count == null) {
+                count = new AtomicInteger(0);
+            }
+            count.addAndGet(exercise.getCount());
+            hourHashtable.put(dateString, count);
+        }
+
+        List<String> keyList = new ArrayList<String>(hourHashtable.keySet());
+        Collections.sort(keyList);
+
+        int index = 0;
+        for (String key : keyList){
+            BarEntry barEntry = new BarEntry(hourHashtable.get(key).get(), index);
+            valsUser.add(barEntry);
+            xVals.add(key);
+            index = index + 1;
+        }
+
+        BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");
+        userDataSet.setValueTextSize(10);
+        userDataSet.setBarSpacePercent(30);
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+        dataSets.add(userDataSet);
+
+        BarData data = new BarData(xVals, dataSets);
+        barChart.setData(data);
+        barChart.invalidate();
+    }
+
+    public void setDataByDay() {
+        ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
+        ArrayList<String> xVals = new ArrayList<String>();
+
+        Hashtable<String, AtomicInteger> hourHashtable = new Hashtable<>();
+
+        String todayString = DateFormatter.dayFormat(new Date());
+        Date today = DateFormatter.toDateDay(todayString);
+        Date tomorrow = DateFormatter.theDayAfterXDays(today, 1);
+
+        RealmResults<Exercise> exercises = realm.where(Exercise.class).between("date", today, tomorrow).findAll();
+
+        for (Exercise exercise : exercises) {
+            String dateString = DateFormatter.dayFormat(exercise.getDate());
+            AtomicInteger count = hourHashtable.get(dateString);
+            if (count == null) {
+                count = new AtomicInteger(0);
+            }
+            count.addAndGet(exercise.getCount());
+            hourHashtable.put(dateString, count);
+        }
+
+        List<String> keyList = new ArrayList<String>(hourHashtable.keySet());
+        Collections.sort(keyList);
+
+        int index = 0;
+        for (String key : keyList){
+            BarEntry barEntry = new BarEntry(hourHashtable.get(key).get(), index);
+            valsUser.add(barEntry);
+            xVals.add(key);
+            index = index + 1;
+        }
+
+        BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");
+        userDataSet.setValueTextSize(10);
+        userDataSet.setBarSpacePercent(30);
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+        dataSets.add(userDataSet);
+
+        BarData data = new BarData(xVals, dataSets);
+        barChart.setData(data);
+        barChart.invalidate();
+    }
+
+    public void setDataByMonth() {
+        ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
+        ArrayList<String> xVals = new ArrayList<String>();
+
+        Hashtable<String, AtomicInteger> hourHashtable = new Hashtable<>();
+
+        RealmResults<Exercise> exercises = realm.where(Exercise.class).findAll();
+
+        for (Exercise exercise : exercises) {
+            String dateString = DateFormatter.monthFormat(exercise.getDate());
+            AtomicInteger count = hourHashtable.get(dateString);
+            if (count == null) {
+                count = new AtomicInteger(0);
+            }
+            count.addAndGet(exercise.getCount());
+            hourHashtable.put(dateString, count);
+        }
+
+        List<String> keyList = new ArrayList<String>(hourHashtable.keySet());
+        Collections.sort(keyList);
+
+        int index = 0;
+        for (String key : keyList){
+            BarEntry barEntry = new BarEntry(hourHashtable.get(key).get(), index);
+            valsUser.add(barEntry);
+            xVals.add(key);
+            index = index + 1;
+        }
+
+        BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");
+        userDataSet.setValueTextSize(10);
+        userDataSet.setBarSpacePercent(30);
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+        dataSets.add(userDataSet);
+
+        BarData data = new BarData(xVals, dataSets);
+        barChart.setData(data);
+        barChart.invalidate();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.menu1:
+                setDataByHour();
+                break;
+            case R.id.menu2:
+                setDataByDay();
+                break;
+            case R.id.menu3:
+                setDataByMonth();
+                break;
+        }
+
+        return true;
+    }
 }
