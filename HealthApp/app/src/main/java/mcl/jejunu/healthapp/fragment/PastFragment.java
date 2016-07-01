@@ -18,7 +18,10 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -26,6 +29,7 @@ import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.formatter.DateFormatter;
 import mcl.jejunu.healthapp.formatter.StepYAxisValueFormatter;
 import mcl.jejunu.healthapp.object.Exercise;
+import mcl.jejunu.healthapp.prediction.PredictionFilter;
 
 /**
  * Created by neo-202 on 2016-05-11.
@@ -56,54 +60,10 @@ public class PastFragment extends Fragment implements PopupMenu.OnMenuItemClickL
             }
         });
 
-        ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
-        ArrayList<String> xVals = new ArrayList<String>();
-        RealmResults<Exercise> exercises = realm.where(Exercise.class).findAllSorted("date");
-        Date firstDate = exercises.first().getDate();
-        Date lastDate = exercises.last().getDate();
-
-        String firstDateString = DateFormatter.dayFormat(firstDate);
-        Date firstDateStart = DateFormatter.toDateDay(firstDateString);
-        Date firstDateEnd = DateFormatter.theDayAfterXDays(firstDateStart, 1);
-
-        String lastDateString = DateFormatter.dayFormat(lastDate);
-        Date lastDateStart = DateFormatter.toDateDay(lastDateString);
-        Date lastDateEnd = DateFormatter.theDayAfterXDays(lastDateStart, 1);
-
-        int index = 0;
-        while(!(firstDateStart.equals(lastDateStart))){
-            if (realm.where(Exercise.class).between("date", firstDateStart, firstDateEnd).findAll().size() != 0) {
-                long count = (Long)realm.where(Exercise.class).between("date", firstDateStart, firstDateEnd).findAll().sum("count");
-                BarEntry entry = new BarEntry(count, index);
-                valsUser.add(entry);
-                xVals.add(DateFormatter.dayFormat(firstDateStart));
-                firstDateStart = DateFormatter.theDayAfterXDays(firstDateStart, 1);
-                firstDateEnd = DateFormatter.theDayAfterXDays(firstDateEnd, 1);
-                index = index + 1;
-            }
-        }
-        if (realm.where(Exercise.class).between("date", lastDateStart, lastDateEnd).findAll().size() != 0) {
-            long count = (Long)realm.where(Exercise.class).between("date", lastDateStart, lastDateEnd).findAll().sum("count");
-            BarEntry entry = new BarEntry(count, index);
-            valsUser.add(entry);
-            xVals.add(DateFormatter.dayFormat(lastDateStart));
-        }
-
-
-        BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");
-        userDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-        userDataSet.setValueTextSize(10);
-        userDataSet.setBarSpacePercent(30);
-
-        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-        dataSets.add(userDataSet);
-
-        BarData data = new BarData(xVals, dataSets);
-        barChart.setData(data);
+        setDataByHour();
 
         barChart.getXAxis().setDrawGridLines(false);
         barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        barChart.getXAxis().setTextSize(7);
         barChart.getAxisLeft().setAxisMinValue(0);
         barChart.getAxisLeft().setDrawAxisLine(false);
         barChart.getAxisLeft().setValueFormatter(new StepYAxisValueFormatter());
@@ -111,8 +71,139 @@ public class PastFragment extends Fragment implements PopupMenu.OnMenuItemClickL
         barChart.setDescription("");
         barChart.getLegend().setEnabled(false);
         barChart.invalidate();
-
         return view;
+    }
+
+    public void setDataByHour(){
+        ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
+        ArrayList<String> xVals = new ArrayList<String>();
+
+        Hashtable<String, Integer> hashtable = new Hashtable<>();
+        RealmResults<Exercise> allExercises = realm.where(Exercise.class).findAll();
+
+        for (Exercise exercise : allExercises) {
+            String dateString = DateFormatter.hourFormat(exercise.getDate());
+            Integer count = hashtable.get(dateString);
+            if (count == null) {
+                count = Integer.valueOf(0);
+            }
+            count = count + exercise.getCount();
+            hashtable.put(dateString, count);
+        }
+
+        List<String> keyList = new ArrayList<>(hashtable.keySet());
+        Collections.sort(keyList);
+
+        int index = 0;
+
+        for(String key : keyList){
+
+            BarEntry currentBarEntry = new BarEntry(hashtable.get(key), index);
+            valsUser.add(currentBarEntry);
+            xVals.add(key);
+            if(index > 5){
+                break;
+            }
+        }
+
+        BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");
+        userDataSet.setValueTextSize(10);
+        userDataSet.setBarSpacePercent(30);
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+        dataSets.add(userDataSet);
+
+        BarData data = new BarData(xVals, dataSets);
+        barChart.setData(data);
+        barChart.invalidate();
+    }
+
+    public void setDataByDay(){
+        ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
+        ArrayList<String> xVals = new ArrayList<String>();
+
+        Hashtable<String, Integer> hashtable = new Hashtable<>();
+        RealmResults<Exercise> allExercises = realm.where(Exercise.class).findAll();
+
+        for (Exercise exercise : allExercises) {
+            String dateString = DateFormatter.dayFormat(exercise.getDate());
+            Integer count = hashtable.get(dateString);
+            if (count == null) {
+                count = Integer.valueOf(0);
+            }
+            count = count + exercise.getCount();
+            hashtable.put(dateString, count);
+        }
+
+        List<String> keyList = new ArrayList<>(hashtable.keySet());
+        Collections.sort(keyList);
+
+        int index = 0;
+
+        for(String key : keyList){
+
+            BarEntry currentBarEntry = new BarEntry(hashtable.get(key), index);
+            valsUser.add(currentBarEntry);
+            xVals.add(key);
+            if(index > 5){
+                break;
+            }
+        }
+
+        BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");
+        userDataSet.setValueTextSize(10);
+        userDataSet.setBarSpacePercent(30);
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+        dataSets.add(userDataSet);
+
+        BarData data = new BarData(xVals, dataSets);
+        barChart.setData(data);
+        barChart.invalidate();
+    }
+
+    public void setDataByMonth(){
+        ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
+        ArrayList<String> xVals = new ArrayList<String>();
+
+        Hashtable<String, Integer> hashtable = new Hashtable<>();
+        RealmResults<Exercise> allExercises = realm.where(Exercise.class).findAll();
+
+        for (Exercise exercise : allExercises) {
+            String dateString = DateFormatter.monthFormat(exercise.getDate());
+            Integer count = hashtable.get(dateString);
+            if (count == null) {
+                count = Integer.valueOf(0);
+            }
+            count = count + exercise.getCount();
+            hashtable.put(dateString, count);
+        }
+
+        List<String> keyList = new ArrayList<>(hashtable.keySet());
+        Collections.sort(keyList);
+
+        int index = 0;
+
+        for(String key : keyList){
+
+            BarEntry currentBarEntry = new BarEntry(hashtable.get(key), index);
+            valsUser.add(currentBarEntry);
+            xVals.add(key);
+            if(index > 5){
+                break;
+            }
+        }
+
+        BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");
+        userDataSet.setValueTextSize(10);
+        userDataSet.setBarSpacePercent(30);
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+        dataSets.add(userDataSet);
+
+        BarData data = new BarData(xVals, dataSets);
+        barChart.setData(data);
+        barChart.invalidate();
     }
 
     @Override
@@ -121,10 +212,13 @@ public class PastFragment extends Fragment implements PopupMenu.OnMenuItemClickL
 
         switch (item.getItemId()) {
             case R.id.menu1:
+                setDataByHour();
                 break;
             case R.id.menu2:
+                setDataByDay();
                 break;
             case R.id.menu3:
+                setDataByMonth();
                 break;
         }
 

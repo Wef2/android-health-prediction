@@ -29,6 +29,7 @@ import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.formatter.DateFormatter;
 import mcl.jejunu.healthapp.formatter.StepYAxisValueFormatter;
 import mcl.jejunu.healthapp.object.Exercise;
+import mcl.jejunu.healthapp.prediction.PredictionFilter;
 
 /**
  * Created by neo-202 on 2016-05-11.
@@ -78,26 +79,44 @@ public class PredictionFragment extends Fragment implements PopupMenu.OnMenuItem
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
         ArrayList<String> xVals = new ArrayList<String>();
 
-        Hashtable<String, AtomicInteger> hourHashtable = new Hashtable<>();
-
-        String hourString = DateFormatter.hourFormat2(new Date());
+        String hourString = DateFormatter.hourFormat(new Date());
         Date currentHour = DateFormatter.toDateHour(hourString);
         Date afterOneHour = DateFormatter.theHourAfterXHours(currentHour, 1);
 
-        RealmResults<Exercise> currentExercies = realm.where(Exercise.class).between("date", currentHour, afterOneHour).findAll();
+        RealmResults<Exercise> currentExercises = realm.where(Exercise.class).between("date", currentHour, afterOneHour).findAll();
 
         int index = 0;
 
-        int currentValue = currentExercies.sum("count").intValue();
+        int currentValue = currentExercises.sum("count").intValue();
 
         BarEntry currentBarEntry = new BarEntry(currentValue, index);
         valsUser.add(currentBarEntry);
-        xVals.add(DateFormatter.hourFormat(currentExercies.first().getDate()));
+        xVals.add(DateFormatter.hourFormat2(currentExercises.first().getDate()));
         index = index + 1;
 
+        Hashtable<String, Integer> hashtable = new Hashtable<>();
+        RealmResults<Exercise> allExercises = realm.where(Exercise.class).findAll();
+
+        for (Exercise exercise : allExercises) {
+            String dateString = DateFormatter.hourFormat(exercise.getDate());
+            Integer count = hashtable.get(dateString);
+            if (count == null) {
+                count = Integer.valueOf(0);
+            }
+            count = count + exercise.getCount();
+            hashtable.put(dateString, count);
+        }
+
+        List<String> keyList = new ArrayList<>(hashtable.keySet());
+        Collections.sort(keyList);
+        List<Integer> integers = new ArrayList<>();
+        for (String key : keyList){
+            integers.add(hashtable.get(key));
+        }
+
         for (int i = 1; i <= 3; i++){
-//            int predictValue = PredictionFilter.predict(i,currentValue, )
-            BarEntry predictionBarEntry = new BarEntry(i, index);
+            int predictValue = (int)PredictionFilter.predict(i, currentValue, integers);
+            BarEntry predictionBarEntry = new BarEntry(predictValue, index);
             valsUser.add(predictionBarEntry);
             xVals.add(i+"시간 후");
             index = index + 1;
@@ -107,7 +126,7 @@ public class PredictionFragment extends Fragment implements PopupMenu.OnMenuItem
         userDataSet.setValueTextSize(10);
         userDataSet.setBarSpacePercent(30);
 
-        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
         dataSets.add(userDataSet);
 
         BarData data = new BarData(xVals, dataSets);
@@ -119,38 +138,45 @@ public class PredictionFragment extends Fragment implements PopupMenu.OnMenuItem
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
         ArrayList<String> xVals = new ArrayList<String>();
 
-        Hashtable<String, AtomicInteger> dayHashtable = new Hashtable<>();
+        String dayString = DateFormatter.dayFormat(new Date());
+        Date currentDay = DateFormatter.toDateDay(dayString);
+        Date afterOneDay = DateFormatter.theDayAfterXDays(currentDay, 1);
 
-        String todayString = DateFormatter.dayFormat(new Date());
-        Date today = DateFormatter.toDateDay(todayString);
-        Date tomorrow = DateFormatter.theDayAfterXDays(today, 1);
-
-        RealmResults<Exercise> todayExercises = realm.where(Exercise.class).between("date", today, tomorrow).findAll();
-
-        for (Exercise exercise : todayExercises) {
-            String dateString = DateFormatter.dayFormat(exercise.getDate());
-            AtomicInteger count = dayHashtable.get(dateString);
-            if (count == null) {
-                count = new AtomicInteger(0);
-            }
-            count.addAndGet(exercise.getCount());
-            dayHashtable.put(dateString, count);
-        }
-
-        List<String> keyList = new ArrayList<String>(dayHashtable.keySet());
-        Collections.sort(keyList);
+        RealmResults<Exercise> currentExercises = realm.where(Exercise.class).between("date", currentDay, afterOneDay).findAll();
 
         int index = 0;
+
+        int currentValue = currentExercises.sum("count").intValue();
+
+        BarEntry currentBarEntry = new BarEntry(currentValue, index);
+        valsUser.add(currentBarEntry);
+        xVals.add(DateFormatter.dayFormat2(currentExercises.first().getDate()));
+        index = index + 1;
+
+        Hashtable<String, Integer> hashtable = new Hashtable<>();
+        RealmResults<Exercise> allExercises = realm.where(Exercise.class).findAll();
+
+        for (Exercise exercise : allExercises) {
+            String dateString = DateFormatter.dayFormat(exercise.getDate());
+            Integer count = hashtable.get(dateString);
+            if (count == null) {
+                count = Integer.valueOf(0);
+            }
+            count = count + exercise.getCount();
+            hashtable.put(dateString, count);
+        }
+
+        List<String> keyList = new ArrayList<>(hashtable.keySet());
+        Collections.sort(keyList);
+        List<Integer> integers = new ArrayList<>();
         for (String key : keyList){
-            BarEntry barEntry = new BarEntry(dayHashtable.get(key).get(), index);
-            valsUser.add(barEntry);
-            xVals.add(key);
-            index = index + 1;
+            integers.add(hashtable.get(key));
         }
 
         for (int i = 1; i <= 3; i++){
-            BarEntry barEntry = new BarEntry(i, index);
-            valsUser.add(barEntry);
+            int predictValue = (int)PredictionFilter.predict(i, currentValue, integers);
+            BarEntry predictionBarEntry = new BarEntry(predictValue, index);
+            valsUser.add(predictionBarEntry);
             xVals.add(i+"일 후");
             index = index + 1;
         }
@@ -159,7 +185,7 @@ public class PredictionFragment extends Fragment implements PopupMenu.OnMenuItem
         userDataSet.setValueTextSize(10);
         userDataSet.setBarSpacePercent(30);
 
-        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
         dataSets.add(userDataSet);
 
         BarData data = new BarData(xVals, dataSets);
@@ -171,34 +197,45 @@ public class PredictionFragment extends Fragment implements PopupMenu.OnMenuItem
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
         ArrayList<String> xVals = new ArrayList<String>();
 
-        Hashtable<String, AtomicInteger> hourHashtable = new Hashtable<>();
+        String dayString = DateFormatter.monthFormat(new Date());
+        Date currentMonth = DateFormatter.toDateMonth(dayString);
+        Date afterOneMonth = DateFormatter.theMonthAfterXMonths(currentMonth, 1);
 
-        RealmResults<Exercise> exercises = realm.where(Exercise.class).findAll();
-
-        for (Exercise exercise : exercises) {
-            String dateString = DateFormatter.monthFormat(exercise.getDate());
-            AtomicInteger count = hourHashtable.get(dateString);
-            if (count == null) {
-                count = new AtomicInteger(0);
-            }
-            count.addAndGet(exercise.getCount());
-            hourHashtable.put(dateString, count);
-        }
-
-        List<String> keyList = new ArrayList<String>(hourHashtable.keySet());
-        Collections.sort(keyList);
+        RealmResults<Exercise> currentExercises = realm.where(Exercise.class).between("date", currentMonth, afterOneMonth).findAll();
 
         int index = 0;
+
+        int currentValue = currentExercises.sum("count").intValue();
+
+        BarEntry currentBarEntry = new BarEntry(currentValue, index);
+        valsUser.add(currentBarEntry);
+        xVals.add(DateFormatter.monthFormat2(currentExercises.first().getDate()));
+        index = index + 1;
+
+        Hashtable<String, Integer> hashtable = new Hashtable<>();
+        RealmResults<Exercise> allExercises = realm.where(Exercise.class).findAll();
+
+        for (Exercise exercise : allExercises) {
+            String dateString = DateFormatter.monthFormat(exercise.getDate());
+            Integer count = hashtable.get(dateString);
+            if (count == null) {
+                count = Integer.valueOf(0);
+            }
+            count = count + exercise.getCount();
+            hashtable.put(dateString, count);
+        }
+
+        List<String> keyList = new ArrayList<>(hashtable.keySet());
+        Collections.sort(keyList);
+        List<Integer> integers = new ArrayList<>();
         for (String key : keyList){
-            BarEntry barEntry = new BarEntry(hourHashtable.get(key).get(), index);
-            valsUser.add(barEntry);
-            xVals.add(key);
-            index = index + 1;
+            integers.add(hashtable.get(key));
         }
 
         for (int i = 1; i <= 3; i++){
-            BarEntry barEntry = new BarEntry(i, index);
-            valsUser.add(barEntry);
+            int predictValue = (int)PredictionFilter.predict(i, currentValue, integers);
+            BarEntry predictionBarEntry = new BarEntry(predictValue, index);
+            valsUser.add(predictionBarEntry);
             xVals.add(i+"개월 후");
             index = index + 1;
         }
@@ -207,7 +244,7 @@ public class PredictionFragment extends Fragment implements PopupMenu.OnMenuItem
         userDataSet.setValueTextSize(10);
         userDataSet.setBarSpacePercent(30);
 
-        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
         dataSets.add(userDataSet);
 
         BarData data = new BarData(xVals, dataSets);

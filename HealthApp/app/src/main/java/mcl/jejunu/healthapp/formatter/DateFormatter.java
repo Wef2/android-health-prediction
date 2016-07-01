@@ -14,13 +14,13 @@ import java.util.Locale;
  */
 public class DateFormatter {
 
-    private static DateFormat hourFormatter = new SimpleDateFormat("a KK시");
-    private static DateFormat hourFormatter2 = new SimpleDateFormat("yyyy-MM-dd HH:00:00");
+    private static DateFormat hourFormatter = new SimpleDateFormat("yyyy-MM-dd HH:00:00");
+    private static DateFormat hourFormatter2 = new SimpleDateFormat("a KK시");
     private static DateFormat minuteFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:00");
     private static DateFormat dayFormatter = new SimpleDateFormat("yyyy-MM-dd");
     private static DateFormat dayFormatter2 = new SimpleDateFormat("yyyy년 MM월 dd일");
-    private static DateFormat monthFormatter = new SimpleDateFormat("yyyy년 MM월");
-    private static DateFormat monthFormatter2 = new SimpleDateFormat("yyyy-MM");
+    private static DateFormat monthFormatter = new SimpleDateFormat("yyyy-MM");
+    private static DateFormat monthFormatter2 = new SimpleDateFormat("yyyy년 MM월");
     private static DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static DateFormat hmFormatter = new SimpleDateFormat("HH:mm");
 
@@ -52,6 +52,10 @@ public class DateFormatter {
         return dayFormatter.format(date);
     }
 
+    public static String dayFormat2(Date date) {
+        return dayFormatter2.format(date);
+    }
+
     public static String hmFormat(Date date) {
         return hmFormatter.format(date);
     }
@@ -60,6 +64,17 @@ public class DateFormatter {
         Date date = null;
         try {
             date = formatter.parse(dateString);
+
+        } catch (ParseException e1) {
+            e1.printStackTrace();
+        }
+        return date;
+    }
+
+    public static Date toDateHour(String dateString) {
+        Date date = null;
+        try {
+            date = hourFormatter.parse(dateString);
 
         } catch (ParseException e1) {
             e1.printStackTrace();
@@ -78,11 +93,10 @@ public class DateFormatter {
         return date;
     }
 
-    public static Date toDateHour(String dateString) {
+    public static Date toDateMonth(String dateString) {
         Date date = null;
         try {
-            date = hourFormatter2.parse(dateString);
-
+            date = monthFormatter.parse(dateString);
         } catch (ParseException e1) {
             e1.printStackTrace();
         }
