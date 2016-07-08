@@ -15,11 +15,9 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -29,7 +27,6 @@ import mcl.jejunu.healthapp.R;
 import mcl.jejunu.healthapp.formatter.DateFormatter;
 import mcl.jejunu.healthapp.formatter.StepYAxisValueFormatter;
 import mcl.jejunu.healthapp.object.Exercise;
-import mcl.jejunu.healthapp.prediction.PredictionFilter;
 
 /**
  * Created by neo-202 on 2016-05-11.
@@ -74,7 +71,7 @@ public class PastFragment extends Fragment implements PopupMenu.OnMenuItemClickL
         return view;
     }
 
-    public void setDataByHour(){
+    public void setDataByHour() {
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
         ArrayList<String> xVals = new ArrayList<String>();
 
@@ -96,14 +93,15 @@ public class PastFragment extends Fragment implements PopupMenu.OnMenuItemClickL
 
         int index = 0;
 
-        for(String key : keyList){
+        for (String key : keyList) {
 
             BarEntry currentBarEntry = new BarEntry(hashtable.get(key), index);
             valsUser.add(currentBarEntry);
             xVals.add(key);
-            if(index > 5){
+            if (index > 5) {
                 break;
             }
+            index = index + 1;
         }
 
         BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");
@@ -118,7 +116,7 @@ public class PastFragment extends Fragment implements PopupMenu.OnMenuItemClickL
         barChart.invalidate();
     }
 
-    public void setDataByDay(){
+    public void setDataByDay() {
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
         ArrayList<String> xVals = new ArrayList<String>();
 
@@ -140,14 +138,14 @@ public class PastFragment extends Fragment implements PopupMenu.OnMenuItemClickL
 
         int index = 0;
 
-        for(String key : keyList){
-
+        for (String key : keyList) {
             BarEntry currentBarEntry = new BarEntry(hashtable.get(key), index);
             valsUser.add(currentBarEntry);
             xVals.add(key);
-            if(index > 5){
+            if (index > 5) {
                 break;
             }
+            index = index + 1;
         }
 
         BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");
@@ -162,7 +160,7 @@ public class PastFragment extends Fragment implements PopupMenu.OnMenuItemClickL
         barChart.invalidate();
     }
 
-    public void setDataByMonth(){
+    public void setDataByMonth() {
         ArrayList<BarEntry> valsUser = new ArrayList<BarEntry>();
         ArrayList<String> xVals = new ArrayList<String>();
 
@@ -184,14 +182,15 @@ public class PastFragment extends Fragment implements PopupMenu.OnMenuItemClickL
 
         int index = 0;
 
-        for(String key : keyList){
+        for (String key : keyList) {
 
             BarEntry currentBarEntry = new BarEntry(hashtable.get(key), index);
             valsUser.add(currentBarEntry);
             xVals.add(key);
-            if(index > 5){
+            if (index > 5) {
                 break;
             }
+            index = index + 1;
         }
 
         BarDataSet userDataSet = new BarDataSet(valsUser, "사용자");
