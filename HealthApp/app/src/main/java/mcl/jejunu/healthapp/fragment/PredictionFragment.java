@@ -173,7 +173,7 @@ public class PredictionFragment extends Fragment implements PopupMenu.OnMenuItem
             integers.add(hashtable.get(key));
         }
 
-        for (int i = 1; i <= 3; i++){
+        for (int i = 1; i <= 10; i++){
             int predictValue = (int)PredictionFilter.predict(i, currentValue, integers);
             BarEntry predictionBarEntry = new BarEntry(predictValue, index);
             valsUser.add(predictionBarEntry);

@@ -19,32 +19,32 @@ public class PredictionFilter {
                 p = new double[n + 1], // estimated error (posteri)
                 p_prime = new double[n + 1], // estimated error (priori)
                 k = new double[n + 1]; // kalman gain
-        double cur_ave = 0;
-        double mape;
-
         // Initial guesses
         xhat[0] = start;
         p[0] = 1;
 
+        double total = 0;
+        for(Integer integer : numbers){
+            total = total + integer;
+        }
+        double average;
+        average = total / numbers.size();
+        int count = 0;
+
         for (int i = 1; i <= n; i++) {
-
-            int count = numbers.get((i - 1) % numbers.size());
-
             // time update
             xhat_prime[i] = xhat[i - 1];
             p_prime[i] = p[i - 1] + q;
 
+            // average
+            total = total + xhat_prime[i];
+            count = count + 1;
+            average = total / (numbers.size() + count);
+
             // measurement update
             k[i] = p_prime[i] / (p_prime[i] + r);
-            xhat[i] = xhat_prime[i] + k[i] * (count - xhat_prime[i]);
+            xhat[i] = xhat_prime[i] + k[i] * ( average - xhat_prime[i]);
             p[i] = (1 - k[i]) * p_prime[i];
-
-            // calculate running average
-            cur_ave = (cur_ave * (i - 1) + count) / ((double) i);
-
-            // calculate mape
-            mape = Math.abs(((count - xhat[i]) / count)) * 100;
-
         }
         result = xhat[n];
         return result;
